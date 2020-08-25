@@ -1,45 +1,216 @@
 <!DOCTYPE html>
 <html lang="en">
+  <head>
+    <title>Passport Authentication</title>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
 
-<head>
-  <title>Passport Authentication</title>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootswatch/3.3.7/lumen/bootstrap.min.css">
-  <link href="stylesheets/style.css" rel="stylesheet">
-</head>
+    <!-- Stylesheets -->
+    <link
+      rel="stylesheet"
+      href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"
+      integrity="sha384-JcKb8q3iqJ61gNV9KGb8thSsNjpSL0n8PARn9HuZOnIxN0hoP+VmmDGMN5t9UJ0Z"
+      crossorigin="anonymous"
+    />
+    <link rel="stylesheet" type="text/css" href="stylesheets/customstyle.css" />
 
-<body>
-  <nav class="navbar navbar-default">
-    <div class="container-fluid">
-      <div class="navbar-header">
+    <!-- Scripts for Bootstrap -->
+    <script
+      src="https://code.jquery.com/jquery-3.5.1.slim.min.js"
+      integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://cdn.jsdelivr.net/npm/popper.js@1.16.1/dist/umd/popper.min.js"
+      integrity="sha384-9/reFTGAW83EW2RDu2S0VKaIzap3H66lZH81PoYlFhbGU+6BZp6G7niu735Sk7lN"
+      crossorigin="anonymous"
+    ></script>
+    <script
+      src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"
+      integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
+      crossorigin="anonymous"
+    ></script>
+  </head>
+
+  <body>
+
+    <!-- Navbar -->
+    <nav class="navbar navbar-expand-md navbar-dark bg-primary mb-2 rounded-0">
+      <h2 class="navbar-brand ng-binding mx-auto font-weight-bold">
+        Appointify
+      </h2>
+    </nav>
+
+    <div class="container">
+      <div class="row">
+        <div class="col-xl-6 col-lg-4 mb-4 mx-auto">
+          <div class="card border-primary h-100 p-2 mt-2">
+            <div class="card-body flex-column align-items-center">
+              <h4 class="card-title text-primary ng-binding font-weight-bold">
+                Login Form
+              </h4>
+              <p class="text-primary">
+                Please enter your username and password.
+              </p>
+              <p class="text-primary">
+                <a href="#" style="color: #007bff; text-decoration: underline;"
+                  >Register</a
+                >
+                if you don’t have an account.
+              </p>
+
+              <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
+                <li class="nav-item">
+                  <a
+                    class="nav-link active"
+                    id="patient-tab"
+                    data-toggle="tab"
+                    href="#patient"
+                    role="tab"
+                    aria-controls="patient"
+                    aria-selected="true"
+                    >Patient</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    id="doctor-tab"
+                    data-toggle="tab"
+                    href="#doctor"
+                    role="tab"
+                    aria-controls="doctor"
+                    aria-selected="false"
+                    >Doctor</a
+                  >
+                </li>
+                <li class="nav-item">
+                  <a
+                    class="nav-link"
+                    id="admin-tab"
+                    data-toggle="tab"
+                    href="#admin"
+                    role="tab"
+                    aria-controls="admin"
+                    aria-selected="false"
+                    >Administrator</a
+                  >
+                </li>
+              </ul>
+
+              <div class="tab-content">
+                <!-- Patient Login -->
+                <div
+                  class="tab-pane active"
+                  id="patient"
+                  role="tabpanel"
+                  aria-labelledby="home-tab"
+                >
+                  <form class="login">
+                    <div class="form-group text-primary">
+                      <label for="exampleInputEmail1"
+                        >Patient Email address</label
+                      >
+                      <input
+                        type="email"
+                        class="form-control"
+                        id="email-input"
+                        placeholder="Email"
+                      />
+                    </div>
+                    <div class="form-group text-primary">
+                      <label for="exampleInputPassword1">Password</label>
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="password-input"
+                        placeholder="Password"
+                      />
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-auto">
+                      Login
+                    </button>
+                  </form>
+                </div>
+                <!-- Doctor Login -->
+                <div
+                  class="tab-pane"
+                  id="doctor"
+                  role="tabpanel"
+                  aria-labelledby="profile-tab"
+                >
+                  <form class="login">
+                    <div class="form-group text-primary">
+                      <label for="exampleInputEmail1"
+                        >Doctor Email address</label
+                      >
+                      <input
+                        type="email"
+                        class="form-control"
+                        id="email-input"
+                        placeholder="Email"
+                      />
+                    </div>
+                    <div class="form-group text-primary">
+                      <label for="exampleInputPassword1">Password</label>
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="password-input"
+                        placeholder="Password"
+                      />
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-auto">
+                      Login
+                    </button>
+                  </form>
+                </div>
+                <!-- Admin Login -->
+                <div
+                  class="tab-pane"
+                  id="admin"
+                  role="tabpanel"
+                  aria-labelledby="messages-tab"
+                >
+                  <form class="login">
+                    <div class="form-group text-primary">
+                      <label for="exampleInputEmail1"
+                        >Administrator Email address</label
+                      >
+                      <input
+                        type="email"
+                        class="form-control"
+                        id="email-input"
+                        placeholder="Email"
+                      />
+                    </div>
+                    <div class="form-group text-primary">
+                      <label for="exampleInputPassword1">Password</label>
+                      <input
+                        type="password"
+                        class="form-control"
+                        id="password-input"
+                        placeholder="Password"
+                      />
+                    </div>
+                    <button type="submit" class="btn btn-primary mt-auto">
+                      Login
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
       </div>
     </div>
-  </nav>
-  <div class="container">
-    <div class="row">
-      <div class="col-md-6 col-md-offset-3">
-        <h2>Login Form</h2>
-        <form class="login">
-          <div class="form-group">
-            <label for="exampleInputEmail1">Email address</label>
-            <input type="email" class="form-control" id="email-input" placeholder="Email">
-          </div>
-          <div class="form-group">
-            <label for="exampleInputPassword1">Password</label>
-            <input type="password" class="form-control" id="password-input" placeholder="Password">
-          </div>
-          <button type="submit" class="btn btn-default">Login</button>
-        </form>
-        <br />
-        <p>Or sign up <a href="/">here</a></p>
-      </div>
-    </div>
-  </div>
 
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-  <script type="text/javascript" src="js/login.js"></script>
-
-</body>
-
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <script type="text/javascript" src="js/login.js"></script>
+    <script>
+      $(function () {
+        $("#myTab li:last-child a").tab("show");
+      });
+    </script>
+  </body>
 </html>
