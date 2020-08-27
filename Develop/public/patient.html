@@ -87,9 +87,11 @@
                   <small id="questionHelp2" class="form-text text-muted">Ex. 5'10</small>
                 </div>
                 <div class="form-group">
-                  <label for="exampleInputQuestion2">Weight:</label>
-                  <input type="text" class="form-control" id="exampleInputQuestion2" aria-describedby="medicalQuestion" placeholder="Please enter your weight">
-                  <small id="questionHelp3" class="form-text text-muted">lbs/kg</small>
+                  <input type="text" class="form-control-inline" id="exampleInputQuestion2" aria-describedby="medicalQuestion" placeholder="Please enter your weight">
+                  <select class="form-control-inline" id="weightUnit">
+                    <option>lbs.</option>
+                    <option>kg.</option>
+                  </select>
                 </div>
                 <div class="form-group form-check">
                   <input type="checkbox" class="form-check-input" id="medicationCheck" onclick="showMedication()">
