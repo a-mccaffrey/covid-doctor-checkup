@@ -65,14 +65,74 @@
               </p>
             </div>
           </div>
-</div>
-
-
+        </div>
+      </div>
+      <div class="row">
+        <div class="col-12">
+          <div class="card border-primary h-100 p-2 mt-4">
+            <div class="card-body flex-column align-items-center">
+              <h4 class="card-title text-primary ng-binding font-weight-bold">
+                Medical Information - patientName</h4>
+              <!-- <p class="text-primary">
+                This is sample text.</p> -->
+              <form>
+                <div class="form-group">
+                  <label for="formQ1">Healthcard Number:</label>
+                  <input type="email" class="form-control" id="formQ1" aria-describedby="healthcardHelp" placeholder="1234-567-890-XX">
+                  <small id="questionHelp1" class="form-text text-muted">We'll never share your information with anyone else.</small>
+                </div>
+                <div class="form-group">
+                  <label for="formQ2">Height:</label>
+                  <input type="text" class="form-control" id="formQ2" aria-describedby="medicalQuestion" placeholder="Please enter your height">
+                  <small id="questionHelp2" class="form-text text-muted">Ex. 5'10</small>
+                </div>
+                <div class="form-group">
+                  <input type="text" class="form-control-inline" id="exampleInputQuestion2" aria-describedby="medicalQuestion" placeholder="Please enter your weight">
+                  <select class="form-control-inline" id="weightUnit">
+                    <option>lbs.</option>
+                    <option>kg.</option>
+                  </select>
+                </div>
+                <div class="form-group form-check">
+                  <input type="checkbox" class="form-check-input" id="medicationCheck" onclick="showMedication()">
+                  <label class="form-check-label" for="medicationCheck"> Are you taking any medication?</label>
+                </div>
+                <div class="form-group" id="medicationList" style="display:none">
+                  <label for="exampleInputQuestion3">Please list any current or recent medication:</label>
+                  <input type="text" class="form-control" id="exampleInputQuestion3" aria-describedby="medicalQuestion" placeholder="Painkillers, Antibiotics, etc.">
+                  <small id="questionHelp4" class="form-text text-muted">Make sure to include everything so doctors can safely make recommendations.</small>
+                </div>
+                <!-- <div class="form-group">
+                  <label for="exampleInputQuestion4">What brought you in today?</label>
+                  <input type="text" class="form-control" id="exampleInputQuestion4" aria-describedby="medicalQuestion" placeholder="Example submission">
+                  <small id="questionHelp5" class="form-text text-muted">Check-Up, Prescriptions, etc.</small>
+                </div> -->
+                <div class="form-group">
+                  <label for="exampleInputQuestion4">What brought you in today?</label>
+                  <select class="form-control" id="exampleInputQuestion4">
+                    <option>General Check-Up</option>
+                    <option>Prescription Renewal</option>
+                    <option>Acute Pain</option>
+                    <option>Doctor's Note</option>
+                    <option>Referral</option>
+                  </select>
+                  <small id="questionHelp5" class="form-text text-muted">Check-Up, Prescriptions, etc.</small>
+                </div>
+                <div class="form-group form-check">
+                  <input type="checkbox" class="form-check-input" id="exampleCheck1">
+                  <label class="form-check-label" for="exampleCheck1"> I hereby accept Appointify's 
+                    <a href="#">Information Disclosure Policy</a>
+                  </label>
+                </div>
+                <button type="submit" class="btn btn-primary">Submit</button>
+              </form>
+            </div>
+          </div>
         </div>
       </div>
     </div>
-
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
+    <script type="text/javascript" src="js/patient.js"></script>
   </body>
 </html>
