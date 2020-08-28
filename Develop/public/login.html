@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <title>Passport Authentication</title>
+    <title>Appointify.com</title>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
 
@@ -33,10 +33,12 @@
   </head>
 
   <body>
-
     <!-- Navbar -->
     <nav class="navbar navbar-expand-md navbar-dark bg-primary mb-2 rounded-0">
-      <img src="assets/appointify_logo.svg" class="mx-auto"/>
+      <img src="assets/appointify_logo.svg" class="mx-auto" />
+      <div class="navbar-header">
+        <a class="navbar-brand" href="/"> Home </a>
+      </div>
     </nav>
 
     <div class="container">
@@ -48,154 +50,38 @@
                 Login Form
               </h4>
               <p class="text-primary">
-                Please enter your username and password.
+                Please enter your email and password.
               </p>
               <p class="text-primary">
-                <a href="#" style="color: #007bff; text-decoration: underline;"
+                <a href="/" style="color: #007bff; text-decoration: underline"
                   >Register</a
                 >
                 if you don’t have an account.
               </p>
-
-              <ul class="nav nav-tabs mb-4" id="myTab" role="tablist">
-                <li class="nav-item">
-                  <a
-                    class="nav-link active"
-                    id="patient-tab"
-                    data-toggle="tab"
-                    href="#patient"
-                    role="tab"
-                    aria-controls="patient"
-                    aria-selected="true"
-                    >Patient</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    id="doctor-tab"
-                    data-toggle="tab"
-                    href="#doctor"
-                    role="tab"
-                    aria-controls="doctor"
-                    aria-selected="false"
-                    >Doctor</a
-                  >
-                </li>
-                <li class="nav-item">
-                  <a
-                    class="nav-link"
-                    id="admin-tab"
-                    data-toggle="tab"
-                    href="#admin"
-                    role="tab"
-                    aria-controls="admin"
-                    aria-selected="false"
-                    >Administrator</a
-                  >
-                </li>
-              </ul>
-
-              <div class="tab-content">
-                <!-- Patient Login -->
-                <div
-                  class="tab-pane active"
-                  id="patient"
-                  role="tabpanel"
-                  aria-labelledby="home-tab"
-                >
-                  <form class="login">
-                    <div class="form-group text-primary">
-                      <label for="exampleInputEmail1"
-                        >Patient Email address</label
-                      >
-                      <input
-                        type="email"
-                        class="form-control"
-                        id="email-input"
-                        placeholder="Email"
-                      />
-                    </div>
-                    <div class="form-group text-primary">
-                      <label for="exampleInputPassword1">Password</label>
-                      <input
-                        type="password"
-                        class="form-control"
-                        id="password-input"
-                        placeholder="Password"
-                      />
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-auto">
-                      Login
-                    </button>
-                  </form>
-                </div>
-                <!-- Doctor Login -->
-                <div
-                  class="tab-pane"
-                  id="doctor"
-                  role="tabpanel"
-                  aria-labelledby="profile-tab"
-                >
-                  <form class="login">
-                    <div class="form-group text-primary">
-                      <label for="exampleInputEmail1"
-                        >Doctor Email address</label
-                      >
-                      <input
-                        type="email"
-                        class="form-control"
-                        id="email-input"
-                        placeholder="Email"
-                      />
-                    </div>
-                    <div class="form-group text-primary">
-                      <label for="exampleInputPassword1">Password</label>
-                      <input
-                        type="password"
-                        class="form-control"
-                        id="password-input"
-                        placeholder="Password"
-                      />
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-auto">
-                      Login
-                    </button>
-                  </form>
-                </div>
-                <!-- Admin Login -->
-                <div
-                  class="tab-pane"
-                  id="admin"
-                  role="tabpanel"
-                  aria-labelledby="messages-tab"
-                >
-                  <form class="login">
-                    <div class="form-group text-primary">
-                      <label for="exampleInputEmail1"
-                        >Administrator Email address</label
-                      >
-                      <input
-                        type="email"
-                        class="form-control"
-                        id="email-input"
-                        placeholder="Email"
-                      />
-                    </div>
-                    <div class="form-group text-primary">
-                      <label for="exampleInputPassword1">Password</label>
-                      <input
-                        type="password"
-                        class="form-control"
-                        id="password-input"
-                        placeholder="Password"
-                      />
-                    </div>
-                    <button type="submit" class="btn btn-primary mt-auto">
-                      Login
-                    </button>
-                  </form>
-                </div>
+              <div class="">
+                <form class="login">
+                  <div class="form-group text-primary">
+                    <label for="exampleInputEmail1">Email address</label>
+                    <input
+                      type="email"
+                      class="form-control"
+                      id="email-input"
+                      placeholder="Email"
+                    />
+                  </div>
+                  <div class="form-group text-primary">
+                    <label for="exampleInputPassword1">Password</label>
+                    <input
+                      type="password"
+                      class="form-control"
+                      id="password-input"
+                      placeholder="Password"
+                    />
+                  </div>
+                  <button type="submit" class="btn btn-primary mt-auto">
+                    Login
+                  </button>
+                </form>
               </div>
             </div>
           </div>
@@ -205,10 +91,5 @@
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
     <script type="text/javascript" src="js/login.js"></script>
-    <script>
-      $(function () {
-        $("#myTab li:last-child a").tab("show");
-      });
-    </script>
   </body>
 </html>
