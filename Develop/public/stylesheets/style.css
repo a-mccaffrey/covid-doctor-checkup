@@ -2,3 +2,30 @@ form.signup,
 form.login {
   margin-top: 50px;
 }
+.navbar-brand{
+  display: block;
+}
+#doctors, button{
+  display: block;
+  width: 100%;
+}
+#showdocs, ul, li {
+  list-style: none;
+}
+ .time{
+width: 150px;
+border-radius: 0%;
+margin-left: 4px;
+ }
+
+ .booknow{
+   width: 150px;
+
+ }
+ ul{
+   display: inline-block;
+ }
+ /* #jumbotron {
+  background-image: url("https://i.pinimg.com/originals/36/42/29/3642291603d80cbf90ee7421ba227a8b.jpg");
+  background-size: cover;
+} */
