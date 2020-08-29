@@ -13,7 +13,8 @@
       crossorigin="anonymous"
     />
     <link rel="stylesheet" type="text/css" href="stylesheets/customstyle.css" />
-    <link href="stylesheets/style.css" rel="stylesheet" />
+    <link rel="stylesheet" type="text/css" href="stylesheets/style.css" />
+
 
     <!-- Scripts for Bootstrap -->
     <script
@@ -31,67 +32,97 @@
       integrity="sha384-B4gt1jrGC7Jh4AgTPSdUtOBvfO8shuf57BaghqFfPlYxofvL8/KUEfYiJOMMV+rV"
       crossorigin="anonymous"
     ></script>
+
+    <!-- Script for Animate on scroll -->
+    <link rel="stylesheet" href="https://unpkg.com/aos@next/dist/aos.css" />
+
   </head>
 
   <body>
-    <!-- Navbar -->
-    <nav class="navbar navbar-expand-md navbar-dark bg-primary mb-2 rounded-0">
-      <img src="assets/appointify_logo.svg" class="mx-auto" />
+    <!-- Start Navbar -->
+    <nav class="navbar fixed-top navbar-expand-md navbar-dark bg-primary rounded-0">
+      <img src="assets/appointify_logo.svg" class="mx-auto my-2" />
     </nav>
-    <div class="jumbotron jumbotron-fluid text-center">
-      <h1 class="display-2 project">Open source project</h1>
-      <br /><br />
-      <p class="lead">With "Appointify" you can .....</p>
-      <br /><br />
-      <a class="btn btn-primary" href="" role="button">How it works ↓</a>
-      <p class="lead"></p>
-    </div>
-    <div class="container ">
-      <div class="row ">
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Special title treatment</h5>
-              <p class="card-text">
-                With supporting text below as a natural lead-in to additional
-                content.
-              </p>
-              <a href="/signup" class="btn btn-primary">Sing Up </a>
-            </div>
-          </div>
-        </div>
-        <div class="col-lg-6">
-          <div class="card">
-            <div class="card-body">
-              <h5 class="card-title">Special title treatment</h5>
-              <p class="card-text">
-                With supporting text below as a natural lead-in to additional
-                content.
-              </p>
-              <a href="/login" class="btn btn-primary">Login </a>
-            </div>
-          </div>
+    <!-- End Navbar -->
+    
+    <!-- Start Hero/Jumbotron Area -->
+    <div class="jumbotron text-center bg-transparent" style="margin-top: 200px">
+      <video class="video-background d-none d-lg-block" preload="" muted="" autoplay="" loop="">
+        <source src="/Develop/public/assets/desktop_video.mp4" type="video/mp4">
+      </video>
+      <video class="video-background d-block d-lg-none" preload="" muted="" autoplay="" loop="">
+        <source src="/Develop/public/assets/mobile_video.mp4" type="video/mp4">
+      </video>
+      <div class="row">
+        <div class="col-lg-6 mx-auto">
+          <h1 class="my-4 text-primary">An open source project for booking doctor's appointments</h1>
+          <p class="my-4 text-primary">With "Appointify" you can pick the doctor you want to see and make an appointment with them easily. We are also providing up-to-date information on the COVID-19 statistics for Canada.</p>
+          <a class="btn btn-primary" href="#bottom" role="button">How it works ↓</a>
         </div>
       </div>
     </div>
-    <br /><br />
-    <div>
-      <h5 class="text-center">
-        On project worked:
-        <a href="https://github.com/liam-mack">Liam,</a>
-        <a href="https://github.com/sardanap95">Pushpi,</a>
-        <a href="https://github.com/a-mccaffrey">Aisling,</a>
-        <a href="https://github.com/DiLiubarets">Dina</a>
-      </h5>
-      <br /><br />
+    <!-- End Hero/Jumbotron Area -->
+    
+    <!-- Start Content Area -->
+    <div class="bg-white">
+      <div class="container pt-5">
+
+        <!-- Start Sign up / Log in Area -->
+        <div class="row">
+          <div class="col-lg-6">
+            <div class="card border-primary h-100 p-2 mt-2"  data-aos="fade-up" data-aos-duration="6000">
+              <div class="card-body">
+                <h5 class="card-title text-primary font-weight-bold">Make an account and book your appointment.</h5>
+                <p class="card-text text-primary">Making an account is free, easy, and fast. Once you've made an account, you can immediately book an appointment with any doctor of your choice. If you're a doctor, you can manage your work availablity after you make an account, allowing patients to book appointments with you, and you can see your scheduled appointments from your dashboard.</p>
+                <a href="/signup" class="btn btn-primary">Sign Up </a>
+              </div>
+            </div>
+          </div>
+          <div class="col-lg-6">
+            <div class="card border-primary h-100 p-2 mt-2" data-aos="fade-up" data-aos-duration="6000">
+              <div class="card-body">
+                <h5 class="card-title text-primary font-weight-bold">Log in with an existing account to book an appointment.</h5>
+                <p class="card-text text-primary">If you already have an account, you're all set to make an appointment and keep track of upcoming appointments. For doctors, make sure you check your dashboard to see who is coming to see you next, and to adjust your availability as it changes.</p>
+                <a href="/login" class="btn btn-primary">Log in </a>
+              </div>
+            </div>
+          </div>
+        </div>
+        <!-- End Sign up / Log in Area -->
+
+        <!-- Start Contributors Area -->
+        <div class="row">
+          <div class="col my-5">
+            <h5 class="text-center">Project Contributors:
+             <a href="https://github.com/liam-mack">Liam,</a>
+             <a href="https://github.com/sardanap95">Pushpi,</a>
+             <a href="https://github.com/a-mccaffrey">Aisling,</a>
+             <a href="https://github.com/DiLiubarets">Dina</a>
+            </h5>
+          </div>
+        </div>
+        <!-- End Contributors Area -->
+
+      <!-- End Content Area -->
+      </div>
     </div>
 
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
-    <script type="text/javascript" src=""></script>
-    <script>
-      $(function () {
-        $("#myTab li:last-child a").tab("show");
-      });
-    </script>
+  <!-- Jquery -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+  <script type="text/javascript" src=""></script>
+
+  <!-- Custom script -->
+  <script>
+    $(function () {
+      $("#myTab li:last-child a").tab("show");
+     });
+  </script>
+
+  <!-- Animate on Scroll script -->
+  <script src="https://unpkg.com/aos@next/dist/aos.js"></script>
+  <script>
+    AOS.init();
+  </script>
+
   </body>
 </html>
