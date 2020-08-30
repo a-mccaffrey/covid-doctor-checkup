@@ -22,9 +22,10 @@ $(document).ready(function() {
     passwordInput.val("");
   });
 
-
+  //loginUser("admin@gmail.com", "admin")
   //loginUser("diana.liubarets@gmail.com", "12345")
   //loginUser("iqbal.sian@hotmail.com", "12345")
+  //loginUser("drhui@drhui.com", "12345")
 
 
   // loginUser does a post to our "api/login" route and if successful, redirects us the the members page

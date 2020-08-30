@@ -1,45 +1,59 @@
-let loggedIn = false;
-let clientID;
-let clientName;
+let appointmentData = {
+  clientID: null,
+  doctorID: null,
+  doctorName: null,
+  year: null,
+  month: null,
+  day: null,
+  hour: null,
+  healthcardNum: null,
+  height: null,
+  weight: null,
+  currentMed: null,
+  checkup: null,
+};
+
 let role;
-let doctorID;
-let day;
+let doctorSchedule = [];
 let doctorArray = [];
 let daysArray = [];
 let timeSlots = [];
-let timeSlotID;
 
 $(document).ready(function () {
-  const doctorContainer = $("#doctors");
-  const timesContainer = $("#times");
+  const userContainer = $("#userContainer");
+  const userHeader = $(".userHeader");
+  const doctorScheduleSelect = $("#doctorScheduleSelect");
   const apptContainer = $("#appointment-form");
-  const clientAppointment = $(".header");
-
-  // This file just does a GET request to figure out which user is logged in
-  // and updates the HTML on the page
 
   getUserData();
 
   function getUserData() {
     $.get("/api/user_data").then(function (data) {
       $(".member-name").text(data.name);
-      clientID = data.id;
-      clientName = data.name;
+      appointmentData.clientID = data.id;
+      appointmentData.clientName = data.name;
       role = data.role;
-      getAppointments(data.role);
-      getDoctors(data.role);
+
+      if (data.doctorSchedule) {
+        doctorSchedule = JSON.parse(data.doctorSchedule);
+      }
+
+      if (role == "patient" || role == "doctor") {
+        getAppointments(role, appointmentData.clientID);
+      }
+      getDoctors(role);
     });
   }
 
-  function getAppointments(role) {
+  function getAppointments(role, id) {
     $.post("/api/getUserAppointments", {
-      id: clientID,
+      id: id,
       role: role,
     }).then(function (data) {
       if (data) {
         if (data.role == "patient") {
           for (appointment of data.appointments) {
-            clientAppointment.html(
+            userHeader.html(
               "<p> Your booked appointment on " +
                 appointment.month +
                 "/" +
@@ -55,13 +69,11 @@ $(document).ready(function () {
             );
           }
         }
-        if (data.role == "doctor") {
-          console.log(data)
+        if (data.role == "doctor" || data.role == "admin") {
+          getWorkingData(doctorSchedule);
           for (appointment of data.appointments) {
-            doctorContainer.append(
-
-              ` 
-              <div class="col-lg-6 col-sm-12 ">
+            userContainer.append(
+              ` <div class="col-lg-6 col-sm-12 ">
               <div class="card border-success h-100 p-2 mt-2">
                 <div class="card-body flex-column align-items-center">
               <div><h5> ${appointment.month}/${appointment.day}/${appointment.year} at ${appointment.hour}:00</h5></div>
@@ -82,13 +94,117 @@ $(document).ready(function () {
     });
   }
 
+  function getWorkingData(doctorSchedule) {
+    let exists = false;
+    if (doctorSchedule.length > 0) {
+      exists = true;
+    }
+
+    $.get("/api/getWorkingData").then(function (data) {
+      for (day of data.workingDays) {
+        if (!exists) {
+          let obj = {
+            day: day,
+            hours: data.workingHours,
+          };
+          doctorSchedule.push(JSON.parse(JSON.stringify(obj)));
+        }
+
+        apptContainer.append(`<h3 class='font-weight-bold' >${day}</h3>`);
+        for (hour of data.workingHours) {
+          apptContainer.append(`
+         
+            <div class="form-check form-check-inline" >
+          <input type="checkbox" class="form-check-input" id=${
+            day + "_" + hour.hour
+          }>
+          <label class="form-check-label lg" for=${day} value=${hour.hour}>${
+            hour.name
+          }</label>
+        </div>`);
+        }
+      }
+
+      doctorScheduleSelect.append(
+        "<button class='btn btn-success' id='scheduleSubmit'>Submit schedule<button>"
+      );
+
+      if (role == "admin") {
+        userContainer.append("<button class='btn btn-success' id='back'>Back</button>");
+      }
+
+      applySchedule();
+      function applySchedule() {
+        if (exists) {
+          for (i in doctorSchedule) {
+            for (j in doctorSchedule[i].hours) {
+              if (doctorSchedule[i].hours[j].avail) {
+                let day = doctorSchedule[i].day;
+                let hour = doctorSchedule[i].hours[j].hour;
+                let checkboxID = "#" + day + "_" + hour;
+                $(checkboxID).prop("checked", true);
+              }
+            }
+          }
+        }
+      }
+
+      $("input:checkbox").change(function (event) {
+        var isChecked = $(this).is(":checked");
+        str = event.target.id.split("_");
+        dayName = str[0];
+        hour = str[1];
+        updateSchedule();
+        function updateSchedule() {
+          for (entry of doctorSchedule) {
+            if (entry.day === dayName) {
+              for (h of entry.hours) {
+                if (h.hour == hour) {
+                  h.avail = isChecked;
+                  return;
+                }
+              }
+            }
+          }
+        }
+      });
+
+      function createSubmitObject() {
+        let doctorID = ""
+        if (role == "doctor") {
+          doctorID = appointmentData.clientID
+        }
+        if (role == "admin") {
+          doctorID = appointmentData.doctorID
+        }
+        
+        let obj = {
+          schedule: JSON.stringify(doctorSchedule),
+          doctorID: doctorID
+        }
+        return obj
+      }
+
+      $("#scheduleSubmit").on("click", () => {
+        $.post("/api/submitDoctorSchedule", createSubmitObject()).then(function (data) {
+          doctorScheduleSelect.append(data);
+        });
+      });
+    });
+  }
+
   function getDoctors(role) {
-    timesContainer.html("");
-    if (role == "patient") {
+    if (role == "patient" || role == "admin") {
+      let buttonText = "Book now";
+
+      if (role == "admin") {
+        buttonText = "View";
+      }
+
       $.get("/api/getdoctors").then(function (data) {
         doctorArray = data;
         for (doctor of data) {
-          doctorContainer.append(
+          userContainer.append(
             "<div class='col my-2'><div class='card bg-success h-100'><div id='showdocs' class='card-body text-light'><h5 class='card-title font-weight-bold'>" +
               doctor.name +
               "</h5><p>Gender: " +
@@ -107,7 +223,9 @@ $(document).ready(function () {
               doctor.name +
               " value=" +
               doctor.id +
-              "> Book now</button></div></div></div>"
+              "> " +
+              buttonText +
+              "</button></div></div></div>"
           );
         }
       });
@@ -115,55 +233,59 @@ $(document).ready(function () {
   }
 
   function getDays() {
-    doctorContainer.html("");
-    $.get("/api/getDates").then(function (data) {
+    $.post("/api/getDates", {
+      doctorID: appointmentData.doctorID,
+    }).then(function (data) {
       daysArray = data;
-      for (index in daysArray) {
-        timesContainer.append(
-          "<div class='col my-2'><div class='card bg-success h-100'><div class='card-body text-light'><h5 class='card-title font-weight-bold'>" +
-          daysArray[index].name +
-          "</h5><button class='btn btn-outline-light' value='days' id=" +
-            index +
-            ">Select this date</button></div></div></div>"
-        );
+      if (daysArray.length != 0) {
+        for (index in daysArray) {
+          userContainer.append(
+            "<div class='col my-2'><div class='card bg-success h-100'><div class='card-body text-light'><h5 class='card-title font-weight-bold'><button class='btn btn-outline-light' value='days' id=" +
+            index +">"+daysArray[index].name +"</button></div></div></div>"
+          );
+        }
+      } else {
+        userContainer.append("<h3 class='font-weight-bold text-center'>The doctor you have chosen is unavailable on this date</h3>");
       }
-      timesContainer.append("<div class='col my-2'><div class='card bg-primary h-100'><div class='card-body text-light'><h5 class='card-title font-weight-bold'>Select a different doctor</h5><a class='btn btn-outline-light' id='back'>Go Back</a></div></div></div>");
+      userContainer.append("<div class='col my-2'><div class='card bg-primary h-100'><div class='card-body text-light'><h5 class='card-title font-weight-bold'>Select a different doctor</h5><a class='btn btn-outline-light' id='back'>Go Back</a></div></div></div>");
     });
   }
 
   function getSchedule(doctorID, dayID) {
-    timesContainer.html("");
-    let doctorName = getDoctorName(doctorID, doctorArray);
-    day = daysArray[dayID];
+    let day = daysArray[dayID];
+    appointmentData.doctorName = getDoctorName(doctorID, doctorArray);
+    appointmentData.year = day.year;
+    appointmentData.month = day.month;
+    appointmentData.day = day.day;
     $.post("/api/getSchedule", {
       id: doctorID,
       year: day.year,
       month: day.month,
       day: day.day,
+      dayOfWeek: day.name.substring(0, 3),
     }).then(function (data) {
-      timesContainer.append("<div class='col my-2'><div class='card bg-white border-0 h-100'><div class='card-body text-success'><h3 id='doctor-name' class='card-title font-weight-bold'>" + doctorName + "'s availability:</h3></div></div></div>");
+      userContainer.append(
+        "<div class='col my-2'><div class='card bg-white border-0 h-100'><div class='card-body text-success'><h3 id='doctor-name' class='card-title font-weight-bold'>" + appointmentData.doctorName + "'s availability:</h3></div></div></div>"
+      );
       timeSlots = data;
-      if (timeSlots) {
+      if (timeSlots.length != 0) {
         for (index in timeSlots) {
-          timesContainer.append(
-           "<div class='col my-2'><div class='card bg-success h-100'><div class='card-body text-light'><h5 class='card-title font-weight-bold'>" +
-              timeSlots[index].name +
-              "</h5><button type='submit' class='btn btn-outline-light' value='timeslot' id=" +
-              index +
-              ">Select this time</button></div></div></div>"
+          userContainer.append(
+            "<div class='col my-2'><div class='card bg-success h-100'><div class='card-body text-light'><h5 class='card-title font-weight-bold'>Select this time</h5><button type='submit' class='btn btn-outline-light' value='timeslot' id=" +
+               index+
+              ">" +timeSlots[index].name+"</button></div></div></div>"
           );
         }
       } else {
-        timesContainer.append("<h3 class='font-weight-bold text-center'>The doctor you have chosen is unavailable on this date</h3>");
+        userContainer.append("<h3 class='font-weight-bold text-center'>The doctor you have chosen is unavailable on this date</h3>");
       }
 
-      timesContainer.append("<div class='col my-2'><div class='card bg-primary h-100'><div class='card-body text-light'><h5 class='card-title font-weight-bold'>Select a different doctor</h5><a class='btn btn-outline-light' id='back'>Go Back</a></div></div></div>");
+      userContainer.append("<div class='col my-2'><div class='card bg-primary h-100'><div class='card-body text-light'><h5 class='card-title font-weight-bold'>Select a different doctor</h5><a class='btn btn-outline-light' id='back'>Go Back</a></div></div></div>");
     });
   }
 
   function showAppointmentForm() {
-    timesContainer.html("");
-    apptContainer.append(`<form class="appointment mt-1 text-success font-weight-bold">
+    userContainer.append(`<form class="appointment mt-1 text-success font-weight-bold">
       <div class="form-group">
         <label for="heaithcardnumber">Healthcard Number:</label>
         <input type="text" class="form-control" id="heaithcardnumber" aria-describedby="healthcardHelp" placeholder="1234-567-890-XX">
@@ -198,74 +320,82 @@ $(document).ready(function () {
         </select>
         <small id="questionHelp5" class="form-text text-muted">Check-Up, Prescriptions, etc.</small>
       </div>
-      <button type="submit" class="btn btn-primary mb-3">Submit</button>
+      <button type="submit" class="btn btn-primary">Submit</button>
     </form>`);
     var heaithcardInput = $("#heaithcardnumber");
     var heightInput = $("#height");
     var weightInput = $("#weightUnit");
     var medicationListInput = $("#medicationListInput");
     var checkupInput = $("#checkup");
-    var appointmentForm = $(".appointment")
+    var appointmentForm = $(".appointment");
 
     appointmentForm.on("submit", function (event) {
       event.preventDefault();
-      var appointmentFormData = {
-        healthcardNum: heaithcardInput.val().trim(),
-        height: heightInput.val().trim(),
-        weight: weightInput.val().trim(),
-        currentMed: medicationListInput.val().trim(),
-        checkup: checkupInput.val().trim(),
-      }
-      console.log(appointmentFormData)
-      createAppointment(timeSlotID, appointmentFormData)
+
+      appointmentData.healthcardNum = heaithcardInput.val().trim();
+      appointmentData.height = heightInput.val().trim();
+      appointmentData.weight = weightInput.val().trim();
+      appointmentData.currentMed = medicationListInput.val().trim();
+      appointmentData.checkup = checkupInput.val().trim();
+
+      createAppointment(appointmentData);
     });
   }
-  
-  function createAppointment(timeID, appointmentForm) {
-    $.post("/api/createAppointment", {
-      clientID: clientID,
-      doctorID: doctorID,
-      doctorName: getDoctorName(doctorID, doctorArray),
-      clientName: clientName,
-      year: day.year,
-      month: day.month,
-      day: day.day,
-      hour: timeSlots[timeID].hour,
-      healthcardNum: appointmentForm.healthcardNum,
-      height: appointmentForm.height,
-      weight: appointmentForm.weight,
-      currentMed: appointmentForm.currentMed,
-      checkup: appointmentForm.checkup
-    }).then(function (data) {
+
+  function createAppointment(appointmentData) {
+    $.post("/api/createAppointment", appointmentData).then(function (data) {
+      userContainer.html(data);
       apptContainer.html("<img src='./assets/sick_teddy_bear.png' alt='A very sick teddy bear' class='img-fluid mb-3'/><h3 class='font-weight-bold text-success text-center'>" + data + "</h3>");
-      timesContainer.append("<button id='back' class='btn btn-success'>Back</button>");
+
+      userContainer.append("<button id='back' class='btn btn-success' >Back</button>");
     });
   }
 
-  doctorContainer.on("click", (event) => {
-    let id = event.target.value;
-    doctorID = id;
-    getDays();
-  });
+  userContainer.on("click", (event) => {
+    if (role === "patient" || role === "admin") {
 
-  timesContainer.on("click", (event) => {
-    let id = event.target.id;
-    if (event.target.value == "days") {
-      getSchedule(doctorID, id);
-      return;
-    }
+      if ($(event.target).attr("class") == "booknow btn btn-outline-light") {
+        if (role == "patient") {
+          appointmentData.doctorID = event.target.value;
+          userContainer.html("");
+          getDays();
+        }
+        if (role === "admin") {
+          userContainer.html("");
+          appointmentData.doctorID = event.target.value
+          $.post("/api/getDoctorSchedule", {
+            doctorID: appointmentData.doctorID,
+          }).then(function (data) {
+            doctorSchedule = data
+            getAppointments(role, appointmentData.doctorID)
+          });
 
-    if (event.target.value == "timeslot") {
-      timeSlotID = id;
-      showAppointmentForm();
-      return;
-    }
+        }
+      }
 
-    if (id === "back") {
-      getDoctors(role);
-      getAppointments(role);
-      apptContainer.html("");
-      return;
+      if (event.target.value == "days") {
+        userContainer.html("");
+        getSchedule(appointmentData.doctorID, event.target.id);
+        return;
+      }
+
+      if (event.target.value == "timeslot") {
+        userContainer.html("");
+        appointmentData.hour = timeSlots[event.target.id].hour;
+        showAppointmentForm();
+        return;
+      }
+
+      if (event.target.id == "back") {
+        apptContainer.html("");
+        userContainer.html("");
+        doctorScheduleSelect.html("")
+        getDoctors(role);
+        if (role != "admin") {
+          getAppointments(role, appointmentData.clientID);
+        }
+        return;
+      }
     }
   });
 });
@@ -279,12 +409,12 @@ function getDoctorName(doctorID, array) {
 }
 
 function showMedication() {
-  const medicationCheck = document.getElementById("medicationCheck")
-  const medicationList = document.getElementById("medicationList")
-  
-  if (medicationCheck.checked == true){
-      medicationList.style.display = "block";
+  const medicationCheck = document.getElementById("medicationCheck");
+  const medicationList = document.getElementById("medicationList");
+
+  if (medicationCheck.checked == true) {
+    medicationList.style.display = "block";
   } else {
-      medicationList.style.display = "none";
+    medicationList.style.display = "none";
   }
 }

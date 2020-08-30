@@ -5,7 +5,6 @@ var session = require("express-session");
 // Requiring passport as we've configured it
 var passport = require("./config/passport");
 
-
 // Setting up port and requiring models for syncing
 var PORT = process.env.PORT || 8080;
 var db = require("./models");
@@ -38,14 +37,100 @@ require("./routes/api-routes.js")(app);
 db.sequelize.sync().then(function () {
   app.listen(PORT, function () {
 
-    create("iqbal.sian@hotmail.com", "12345", "doctor", "Dr. Iqbal Sian", "Male", "QC", "123456789")
-    create("diana.liubarets@gmail.com", "12345", "patient", "Dina Liu", "Female", "QC", "123456789")
-    create("smitm@gmail.com", "12345", "doctor","Dr. Morne Smit","Male","British Columbia", "7783983080")
-    create("nolanjansen@outlook.com","12345", "doctor","Dr Nolan Jansen", "Male", "Quebec",  "8193456792")
-    create("drhui@drhui.com","12345", "doctor","Dr. Fred Hui", "Male", "Ontario",  "4169204209")
-    create("k.brien@gmail.com","12345", "doctor","Dr. Kevin O`Brien", "Male","Ontario", "6473490053")
-    create("dr.john@hotmail.com","12345", "doctor","Dr. Gary Weinstein", "Male", "Ontario",  "4164859044")
-    create( "lesliehousefather@hotmail.com","12345","doctor","Dr Leslie Housefather","Male","Ontario", "4162226160")
+    let schedule = createSchedule()
+
+    create(
+      "admin@gmail.com",
+      "admin",
+      "admin",
+      "Admin",
+      "Female",
+      "QC",
+      "123456789",
+      null
+    );
+
+    create(
+      "diana.liubarets@gmail.com",
+      "12345",
+      "patient",
+      "Dina Liu",
+      "Female",
+      "QC",
+      "123456789",
+      null
+    );
+
+    create(
+      "iqbal.sian@hotmail.com",
+      "12345",
+      "doctor",
+      "Dr. Iqbal Sian",
+      "Male",
+      "QC",
+      "123456789",
+      schedule
+    );
+    create(
+      "smitm@gmail.com",
+      "12345",
+      "doctor",
+      "Dr. Morne Smit",
+      "Male",
+      "British Columbia",
+      "7783983080",
+      schedule
+    );
+    create(
+      "nolanjansen@outlook.com",
+      "12345",
+      "doctor",
+      "Dr Nolan Jansen",
+      "Male",
+      "Quebec",
+      "8193456792",
+      schedule
+    );
+    create(
+      "drhui@drhui.com",
+      "12345",
+      "doctor",
+      "Dr. Fred Hui",
+      "Male",
+      "Ontario",
+      "4169204209",
+      schedule
+    );
+    create(
+      "k.brien@gmail.com",
+      "12345",
+      "doctor",
+      "Dr. Kevin O`Brien",
+      "Male",
+      "Ontario",
+      "6473490053",
+      schedule
+    );
+    create(
+      "dr.john@hotmail.com",
+      "12345",
+      "doctor",
+      "Dr. Gary Weinstein",
+      "Male",
+      "Ontario",
+      "4164859044",
+      schedule
+    );
+    create(
+      "lesliehousefather@hotmail.com",
+      "12345",
+      "doctor",
+      "Dr Leslie Housefather",
+      "Male",
+      "Ontario",
+      "4162226160",
+      schedule
+    );
 
     console.log(
       "==> 🌎  Listening on port %s. Visit http://localhost:%s/ in your browser.",
@@ -55,8 +140,39 @@ db.sequelize.sync().then(function () {
   });
 });
 
+function createSchedule() {
+  let doctorSchedule = []
+  let workingHours = [
+    { name: "9am", hour: 9, avail: true },
+    { name: "10am", hour: 10, avail: true },
+    { name: "11am", hour: 11, avail: true },
+    { name: "12am", hour: 12 },
+    { name: "2pm", hour: 14 },
+    { name: "3pm", hour: 15, avail: true },
+    { name: "4pm", hour: 16 },
+  ];
+  let workingDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
-function create(email, password, role, name, gender, province, phone) {
+  for (day of workingDays) {
+      let obj = {
+        day: day,
+        hours: workingHours,
+      };
+      doctorSchedule.push(JSON.parse(JSON.stringify(obj)));
+  }
+  return JSON.stringify(doctorSchedule)
+}
+
+function create(
+  email,
+  password,
+  role,
+  name,
+  gender,
+  province,
+  phone,
+  doctorSchedule
+) {
   db.User.create({
     email: email,
     password: password,
@@ -64,7 +180,8 @@ function create(email, password, role, name, gender, province, phone) {
     name: name,
     gender: gender,
     province: province,
-    phone: phone
+    phone: phone,
+    doctorSchedule: doctorSchedule,
   })
     .then(function () {
       //res.redirect(307, "/api/login");
@@ -74,4 +191,3 @@ function create(email, password, role, name, gender, province, phone) {
       //res.status(401).json(err);
     });
 }
-
