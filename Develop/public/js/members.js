@@ -12,6 +12,7 @@ let timeSlotID;
 $(document).ready(function () {
   const doctorContainer = $("#doctors");
   const timesContainer = $("#times");
+  const apptContainer = $("#appointment-form");
   const clientAppointment = $(".header");
 
   // This file just does a GET request to figure out which user is logged in
@@ -88,25 +89,25 @@ $(document).ready(function () {
         doctorArray = data;
         for (doctor of data) {
           doctorContainer.append(
-            "<ul id='showdocs'><li><b>" +
+            "<div class='col my-2'><div class='card bg-success h-100'><div id='showdocs' class='card-body text-light'><h5 class='card-title font-weight-bold'>" +
               doctor.name +
-              "</b></li><li>Gender: " +
+              "</h5><p>Gender: " +
               doctor.gender +
-              "</li><li>Province: " +
+              "</p><p>Province: " +
               doctor.province +
-              "</li><li>Email: <a href=mailto:" +
+              "</p><p>Email: <a class='text-warning' href=mailto:" +
               doctor.email +
               ">" +
               doctor.email +
-              "</a></li><li>Phone number: <a href=tel:" +
+              "</a></p><p>Phone number: <a class='text-warning' href=tel:" +
               doctor.phone +
               "> " +
               doctor.phone +
-              "</a></li><button  class='booknow'id=" +
+              "</a></p><button class='booknow btn btn-outline-light'id=" +
               doctor.name +
               " value=" +
               doctor.id +
-              "> Book now</button></ul>"
+              "> Book now</button></div></div></div>"
           );
         }
       });
@@ -119,14 +120,14 @@ $(document).ready(function () {
       daysArray = data;
       for (index in daysArray) {
         timesContainer.append(
-          "<button value='days' id=" +
+          "<div class='col my-2'><div class='card bg-success h-100'><div class='card-body text-light'><h5 class='card-title font-weight-bold'>" +
+          daysArray[index].name +
+          "</h5><button class='btn btn-outline-light' value='days' id=" +
             index +
-            ">" +
-            daysArray[index].name +
-            "</button>"
+            ">Select this date</button></div></div></div>"
         );
       }
-      timesContainer.append("<button id='back'>Back</button>");
+      timesContainer.append("<div class='col my-2'><div class='card bg-primary h-100'><div class='card-body text-light'><h5 class='card-title font-weight-bold'>Select a different doctor</h5><a class='btn btn-outline-light' id='back'>Go Back</a></div></div></div>");
     });
   }
 
@@ -140,29 +141,29 @@ $(document).ready(function () {
       month: day.month,
       day: day.day,
     }).then(function (data) {
-      timesContainer.append("<h3><b>" + doctorName + "</b></h3>");
+      timesContainer.append("<div class='col my-2'><div class='card bg-white border-0 h-100'><div class='card-body text-success'><h3 id='doctor-name' class='card-title font-weight-bold'>" + doctorName + "'s availability:</h3></div></div></div>");
       timeSlots = data;
       if (timeSlots) {
         for (index in timeSlots) {
           timesContainer.append(
-            "<button type='submit' class='btn btn-primary mt-auto time' value='timeslot' id=" +
-              index +
-              ">" +
+           "<div class='col my-2'><div class='card bg-success h-100'><div class='card-body text-light'><h5 class='card-title font-weight-bold'>" +
               timeSlots[index].name +
-              "</button>"
+              "</h5><button type='submit' class='btn btn-outline-light' value='timeslot' id=" +
+              index +
+              ">Select this time</button></div></div></div>"
           );
         }
       } else {
-        timesContainer.append("Doctor is unavailable on this date");
+        timesContainer.append("<h3 class='font-weight-bold text-center'>The doctor you have chosen is unavailable on this date</h3>");
       }
 
-      timesContainer.append("<button id='back'>Back</button>");
+      timesContainer.append("<div class='col my-2'><div class='card bg-primary h-100'><div class='card-body text-light'><h5 class='card-title font-weight-bold'>Select a different doctor</h5><a class='btn btn-outline-light' id='back'>Go Back</a></div></div></div>");
     });
   }
 
   function showAppointmentForm() {
     timesContainer.html("");
-    timesContainer.append(`<form class="appointment">
+    apptContainer.append(`<form class="appointment mt-1 text-success font-weight-bold">
       <div class="form-group">
         <label for="heaithcardnumber">Healthcard Number:</label>
         <input type="text" class="form-control" id="heaithcardnumber" aria-describedby="healthcardHelp" placeholder="1234-567-890-XX">
@@ -197,7 +198,7 @@ $(document).ready(function () {
         </select>
         <small id="questionHelp5" class="form-text text-muted">Check-Up, Prescriptions, etc.</small>
       </div>
-      <button type="submit" class="btn btn-primary">Submit</button>
+      <button type="submit" class="btn btn-primary mb-3">Submit</button>
     </form>`);
     var heaithcardInput = $("#heaithcardnumber");
     var heightInput = $("#height");
@@ -236,8 +237,8 @@ $(document).ready(function () {
       currentMed: appointmentForm.currentMed,
       checkup: appointmentForm.checkup
     }).then(function (data) {
-      timesContainer.html(data);
-      timesContainer.append("<button id='back'>Back</button>");
+      apptContainer.html("<img src='./assets/sick_teddy_bear.png' alt='A very sick teddy bear' class='img-fluid mb-3'/><h3 class='font-weight-bold text-success text-center'>" + data + "</h3>");
+      timesContainer.append("<button id='back' class='btn btn-success'>Back</button>");
     });
   }
 
@@ -262,7 +263,8 @@ $(document).ready(function () {
 
     if (id === "back") {
       getDoctors(role);
-      getAppointments(role)
+      getAppointments(role);
+      apptContainer.html("");
       return;
     }
   });
