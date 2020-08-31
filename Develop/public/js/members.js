@@ -69,23 +69,25 @@ $(document).ready(function () {
             );
           }
         }
+        if(data.role == "doctor"){
+          userHeader.html(
+            "<h4 class='mt-3'>Please manage your upcoming appointments and schedule below.</h4>"
+          );
+        }
         if (data.role == "doctor" || data.role == "admin") {
           getWorkingData(doctorSchedule);
           for (appointment of data.appointments) {
             userContainer.append(
-              ` <div class="col-lg-6 col-sm-12 ">
-              <div class="card border-success h-100 p-2 mt-2">
-                <div class="card-body flex-column align-items-center">
-              <div><h5> ${appointment.month}/${appointment.day}/${appointment.year} at ${appointment.hour}:00</h5></div>
-              <div><p>Appointments with: <h4>${appointment.clientName}</h4></p>
-             
-              <ul>
-                <li>Healthcard Number: ${appointment.healthcardNum}</li>
-                <li>Height: ${appointment.height}</li>
-                <li>Weight: ${appointment.weight}</li>                
-                <li> Medication client taking: ${appointment.currentMed}</li>
-                <li>The patient here for: ${appointment.checkup}</li>
-              </ul>
+              ` <div class="col my-2">
+                  <div class="card bg-success h-100">
+                    <div class="card-body text-light">
+                      <h5 class="card-title font-weight-bold"> ${appointment.month}/${appointment.day}/${appointment.year} at ${appointment.hour}:00</h5>
+                      <h4>Appointment with: <span class="text-warning">${appointment.clientName}</span></h4>
+                      <p>Healthcard Number: ${appointment.healthcardNum}</p>
+                      <p>Height: ${appointment.height}</p>
+                      <p>Weight: ${appointment.weight}</p>                
+                      <p>Current Medications: ${appointment.currentMed}</p>
+                      <p>Reason for Appointment: ${appointment.checkup}</p>
               </div></div></div></div>`
             );
           }
@@ -110,23 +112,18 @@ $(document).ready(function () {
           doctorSchedule.push(JSON.parse(JSON.stringify(obj)));
         }
 
-        apptContainer.append(`<h3 class='font-weight-bold' >${day}</h3>`);
+        doctorScheduleSelect.append(`<div class='col my-2'><div class='card bg-light border-success h-100'><div class='card-body text-success'><h5 class='card-title font-weight-bold'>${day}</h5><div id='doctorSchedule${day}'></div></div></div></div>`);
         for (hour of data.workingHours) {
-          apptContainer.append(`
-         
-            <div class="form-check form-check-inline" >
-          <input type="checkbox" class="form-check-input" id=${
-            day + "_" + hour.hour
-          }>
-          <label class="form-check-label lg" for=${day} value=${hour.hour}>${
-            hour.name
-          }</label>
+          $(`#doctorSchedule${day}`).append(`
+          <div class="form-check" >
+          <input type="checkbox" class="form-check-input" id=${day + "_" + hour.hour}>
+          <label class="form-check-label" for=${day} value=${hour.hour}>${hour.name}</label>
         </div>`);
-        }
-      }
+        };
+      };
 
       doctorScheduleSelect.append(
-        "<button class='btn btn-success' id='scheduleSubmit'>Submit schedule<button>"
+        "<div class='row'><div class='col m-3'><button class='btn btn-success' id='scheduleSubmit'>Submit schedule</button></div></div>"
       );
 
       if (role == "admin") {
@@ -187,7 +184,8 @@ $(document).ready(function () {
 
       $("#scheduleSubmit").on("click", () => {
         $.post("/api/submitDoctorSchedule", createSubmitObject()).then(function (data) {
-          doctorScheduleSelect.append(data);
+          doctorScheduleSelect.append(
+            "<div class='row'><div class='col m-3'><h3 class='text-success font-weight-bold'>"+ data + "</h2></div></div>");
         });
       });
     });
