@@ -24,7 +24,7 @@ $(document).ready(function() {
 
  loginUser("admin@gmail.com", "admin")
  //loginUser("diana.liubarets@gmail.com", "12345")
- //loginUser(""pushpi.sardana@gmail.com"", "12345")
+ //loginUser("pushpi.sardana@gmail.com", "12345")
 //loginUser("Aisling.mccaffrey@gmail.com", "12345")
 //loginUser("liam.mackinnon@gmail.com", "12345")
 //loginUser("iqbal.sian@hotmail.com", "12345")

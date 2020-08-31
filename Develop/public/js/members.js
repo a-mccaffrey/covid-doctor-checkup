@@ -16,6 +16,7 @@ let appointmentData = {
 let role;
 let doctorSchedule = [];
 let doctorArray = [];
+let patientArray = [];
 let daysArray = [];
 let timeSlots = [];
 
@@ -42,6 +43,9 @@ $(document).ready(function () {
 
       if (role == "patient" || role == "doctor") {
         getAppointments(role, appointmentData.clientID);
+      }
+      if (role == "admin") {
+        getPatients(role)
       }
       getDoctors(role);
     });
@@ -90,7 +94,7 @@ $(document).ready(function () {
                       <p>Weight: ${appointment.weight}</p>                
                       <p>Current Medications: ${appointment.currentMed}</p>
                       <p>Reason for Appointment: ${appointment.checkup}</p>
-              </div><button class='btn btn-success' id='delete'>Delete</button></div></div>`
+              </div><button class='btn btn-success' value='${appointment.id}' id='deleteAppointment'>Delete</button></div></div>`
             );
           }
         }
@@ -259,6 +263,40 @@ $(document).ready(function () {
     }
   }
 
+  function getPatients(role) {
+    if (role == "doctor" || role == "admin") {
+      $.get("/api/getPatient").then(function (data) {
+        patientArray = data;
+        for (patient of data) {
+          
+            userContainer.append(
+              "<div class='col my-2'><div class='card border-success p-2 mt-2 mb-5'><div id='showdocs' class='card-body text-success'><h5 class='card-title font-weight-bold'>" +
+                patient.name +
+                "</h5><p>Gender: " +
+                patient.gender +
+                "</p><p>Province: " +
+                patient.province +
+                "</p><p>Email: <a class='.text-primary' href=mailto:" +
+                patient.email +
+                ">" +
+                patient.email +
+                "</a></p><p>Phone number: <a class='text-primary' href=tel:" +
+                patient.phone +
+                "> " +
+                patient.phone +
+                "</a></p><button class='booknow btn btn-success'id=" +
+                patient.name +
+                " value=" +
+                patient.id +
+                "> View </button><button class='btn btn-success'id='deleteUser'value=" +
+                patient.id +
+                "> Delete </button></div></div></div>"
+            ); 
+      }
+      });
+    }
+  }
+
   function getDays() {
     $.post("/api/getDates", {
       doctorID: appointmentData.doctorID,
@@ -373,7 +411,7 @@ $(document).ready(function () {
     $.post("/api/createAppointment", appointmentData).then(function (data) {
       userContainer.html("<img src='./assets/sick_teddy_bear.png' alt='A very sick teddy bear' class='img-fluid mb-3'/><h3 class='font-weight-bold text-success text-center'>" + data + "</h3>");
 
-      doctorScheduleSelect.append("<button id='back' class='btn btn-success' >Back</button>");
+      userContainer.append("<button id='back' class='btn btn-success' >Back</button>");
     });
   }
 
@@ -382,8 +420,18 @@ $(document).ready(function () {
       userID: userID,
     }).then(function (data) {
       console.log(data)
-      userContainer.html("")
+      userContainer.html("<h3 class='font-weight-bold text-success text-center'>" + data + "</h3>")
       getDoctors(role)
+    });
+  }
+
+  function deleteAppointment(appointmentID){
+    $.post("/api/deleteAppointment", {
+      appointmentID: appointmentID,
+    }).then(function (data) {
+      console.log(data)
+      userContainer.html("<h3 class='font-weight-bold text-success text-center'>" + data + "</h3>")
+      getAppointments(role, appointmentData.clientID)
     });
   }
 
@@ -404,6 +452,7 @@ $(document).ready(function () {
           }).then(function (data) {
             doctorSchedule = data
             getAppointments(role, appointmentData.doctorID)
+
           });
 
         }
@@ -427,6 +476,7 @@ $(document).ready(function () {
         userContainer.html("");
         doctorScheduleSelect.html("")
         getDoctors(role);
+        getPatients(role)
         if (role != "admin") {
           getAppointments(role, appointmentData.clientID);
         }
@@ -436,6 +486,11 @@ $(document).ready(function () {
         let userID = event.target.value
         deleteUser(userID)
       }
+    }
+    if (event.target.id == "deleteAppointment"){
+      console.log("works")
+      let appointmentID = event.target.value
+      deleteAppointment(appointmentID)
     }
   });
 });

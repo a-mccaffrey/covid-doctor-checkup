@@ -79,6 +79,27 @@ module.exports = function (app) {
       });
   });
 
+  app.get("/api/getPatient", function (req, res) {
+    console.log("/api/getPatient");
+    let role = req.user.role
+    if (role == "admin") {
+      let query = "SELECT * FROM Users WHERE role='patient'"
+      db.sequelize
+      .query(query, {
+        type: db.Sequelize.QueryTypes.SELECT,
+      })
+      .then(function (patients) {
+        res.json(patients);
+      })
+      .catch(function (err) {
+        console.log(err);
+      });
+    } else {
+      res.json({})
+    }
+
+
+  });
   app.post("/api/getUserAppointments", function (req, res) {
     console.log("/api/getUserAppointments");
 
@@ -386,6 +407,24 @@ module.exports = function (app) {
         }
       }).then(function(){
         res.json("User deleted")
+      })
+    } else {
+      res.json({})
+    }
+
+  })
+
+  app.post("/api/deleteAppointment",function (req, res) {
+    console.log("/api/deleteAppointment");
+
+    if (req.user.role == "admin") {
+      let appointmentID = req.body.appointmentID
+      db.Appointment.destroy({
+        where:{
+          id: appointmentID
+        }
+      }).then(function(){
+        res.json("Appointment deleted")
       })
     } else {
       res.json({})
