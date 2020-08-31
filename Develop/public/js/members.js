@@ -14,9 +14,7 @@ let appointmentData = {
 };
 
 let role;
-let doctorSchedule = [];
 let doctorArray = [];
-let patientArray = [];
 let daysArray = [];
 let timeSlots = [];
 
@@ -37,17 +35,21 @@ $(document).ready(function () {
       appointmentData.clientName = data.name;
       role = data.role;
 
-      if (data.doctorSchedule) {
-        doctorSchedule = JSON.parse(data.doctorSchedule);
+      if (role == "doctor" && data.doctorSchedule) {
+        if (data.doctorSchedule) {
+          doctorSchedule = JSON.parse(data.doctorSchedule);
+        }
+        getWorkingData(doctorSchedule);
       }
-
       if (role == "patient" || role == "doctor") {
         getAppointments(role, appointmentData.clientID);
+      }
+      if (role == "patient" || role == "admin") {
+        getDoctors(role);
       }
       if (role == "admin") {
         getPatients(role)
       }
-      getDoctors(role);
     });
   }
 
@@ -81,7 +83,6 @@ $(document).ready(function () {
           );
         }
         if (data.role == "doctor" || data.role == "admin") {
-          getWorkingData(doctorSchedule);
           for (appointment of data.appointments) {
             userContainer.append(
               ` <div class="col my-2">
@@ -106,6 +107,8 @@ $(document).ready(function () {
     let exists = false;
     if (doctorSchedule.length > 0) {
       exists = true;
+    } else {
+      doctorSchedule = []
     }
 
     $.get("/api/getWorkingData").then(function (data) {
@@ -136,8 +139,8 @@ $(document).ready(function () {
         userContainer.append("<div class='row'><div class='col m-3'><button class='btn btn-success' id='back'>Back</button></div></div>");
       }
 
-      applySchedule();
-      function applySchedule() {
+      applySchedule(doctorSchedule);
+      function applySchedule(doctorSchedule) {
         if (exists) {
           for (i in doctorSchedule) {
             for (j in doctorSchedule[i].hours) {
@@ -157,8 +160,8 @@ $(document).ready(function () {
         str = event.target.id.split("_");
         dayName = str[0];
         hour = str[1];
-        updateSchedule();
-        function updateSchedule() {
+        updateSchedule(doctorSchedule);
+        function updateSchedule(doctorSchedule) {
           for (entry of doctorSchedule) {
             if (entry.day === dayName) {
               for (h of entry.hours) {
@@ -172,7 +175,7 @@ $(document).ready(function () {
         }
       });
 
-      function createSubmitObject() {
+      function createSubmitObject(doctorSchedule) {
         let doctorID = ""
         if (role == "doctor") {
           doctorID = appointmentData.clientID
@@ -189,7 +192,7 @@ $(document).ready(function () {
       }
 
       $("#scheduleSubmit").on("click", () => {
-        $.post("/api/submitDoctorSchedule", createSubmitObject()).then(function (data) {
+        $.post("/api/submitDoctorSchedule", createSubmitObject(doctorSchedule)).then(function (data) {
           doctorScheduleSelect.append(
             "<div class='row'><div class='col m-3'><h3 class='text-success font-weight-bold'>"+ data + "</h2></div></div>");
         });
@@ -198,8 +201,6 @@ $(document).ready(function () {
   }
 
   function getDoctors(role) {
-    if (role == "patient" || role == "admin") {
-
       let buttonText = "Book now";
 
       if (role == "admin") {
@@ -259,14 +260,12 @@ $(document).ready(function () {
           );
         }
       }
-      });
-    }
+      }); 
   }
 
   function getPatients(role) {
-    if (role == "doctor" || role == "admin") {
+    if (role == "admin") {
       $.get("/api/getPatient").then(function (data) {
-        patientArray = data;
         for (patient of data) {
           
             userContainer.append(
@@ -284,11 +283,7 @@ $(document).ready(function () {
                 patient.phone +
                 "> " +
                 patient.phone +
-                "</a></p><button class='booknow btn btn-success'id=" +
-                patient.name +
-                " value=" +
-                patient.id +
-                "> View </button><button class='btn btn-success'id='deleteUser'value=" +
+                "</a></p><button class='btn btn-success'id='deleteUser'value=" +
                 patient.id +
                 "> Delete </button></div></div></div>"
             ); 
@@ -344,7 +339,6 @@ $(document).ready(function () {
       } else {
         userContainer.append("<h3 class='font-weight-bold text-center'>The doctor you have chosen is unavailable on this date</h3>");
       }
-
       userContainer.append("<div class='col my-2'><div class='card bg-primary h-100'><div class='card-body text-light'><h5 class='card-title font-weight-bold'>Select a different doctor</h5><a class='btn btn-outline-light' id='back'>Go Back</a></div></div></div>");
     });
   }
@@ -422,6 +416,7 @@ $(document).ready(function () {
       console.log(data)
       userContainer.html("<h3 class='font-weight-bold text-success text-center'>" + data + "</h3>")
       getDoctors(role)
+      getPatients(role)
     });
   }
 
@@ -431,6 +426,9 @@ $(document).ready(function () {
     }).then(function (data) {
       console.log(data)
       userContainer.html("<h3 class='font-weight-bold text-success text-center'>" + data + "</h3>")
+      if (role == "admin") {
+        userContainer.append("<div class='row'><div class='col m-3'><button class='btn btn-success' id='back'>Back</button></div></div>");
+      }
       getAppointments(role, appointmentData.clientID)
     });
   }
@@ -450,9 +448,9 @@ $(document).ready(function () {
           $.post("/api/getDoctorSchedule", {
             doctorID: appointmentData.doctorID,
           }).then(function (data) {
-            doctorSchedule = data
+            let doctorSchedule = data
+            getWorkingData(doctorSchedule);
             getAppointments(role, appointmentData.doctorID)
-
           });
 
         }

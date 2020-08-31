@@ -36,8 +36,7 @@ require("./routes/api-routes.js")(app);
 // Syncing our database and logging a message to the user upon success
 db.sequelize.sync().then(function () {
   app.listen(PORT, function () {
-
-    let schedule = createSchedule()
+    let schedule = createSchedule();
 
     create(
       "admin@gmail.com",
@@ -170,7 +169,7 @@ db.sequelize.sync().then(function () {
 });
 
 function createSchedule() {
-  let doctorSchedule = []
+  let doctorSchedule = [];
   let workingHours = [
     { name: "9am", hour: 9, avail: true },
     { name: "10am", hour: 10, avail: true },
@@ -183,13 +182,13 @@ function createSchedule() {
   let workingDays = ["Mon", "Tue", "Wed", "Thu", "Fri", "Sat", "Sun"];
 
   for (day of workingDays) {
-      let obj = {
-        day: day,
-        hours: workingHours,
-      };
-      doctorSchedule.push(JSON.parse(JSON.stringify(obj)));
+    let obj = {
+      day: day,
+      hours: workingHours,
+    };
+    doctorSchedule.push(JSON.parse(JSON.stringify(obj)));
   }
-  return JSON.stringify(doctorSchedule)
+  return JSON.stringify(doctorSchedule);
 }
 
 function create(
