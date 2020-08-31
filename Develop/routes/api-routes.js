@@ -64,182 +64,213 @@ module.exports = function (app) {
   app.get("/api/getdoctors", function (req, res) {
     console.log("/api/getdoctors");
 
-    db.sequelize
-      .query("SELECT * FROM Users WHERE role='doctor'", {
-        type: db.Sequelize.QueryTypes.SELECT,
-      })
-      .then(function (doctors) {
-        res.json(doctors);
+    if (req.user) {
+      db.sequelize
+        .query("SELECT * FROM Users WHERE role='doctor'", {
+          type: db.Sequelize.QueryTypes.SELECT,
+        })
+        .then(function (doctors) {
+          res.json(doctors);
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    } else {
+      res.json({});
+    }
+  });
 
+  app.get("/api/getPatient", function (req, res) {
+    console.log("/api/getPatient");
 
-
-      })
-      .catch(function (err) {
-        console.log(err);
-      });
+    if (req.user.role == "admin") {
+      let query = "SELECT * FROM Users WHERE role='patient'";
+      db.sequelize
+        .query(query, {
+          type: db.Sequelize.QueryTypes.SELECT,
+        })
+        .then(function (patients) {
+          res.json(patients);
+        })
+        .catch(function (err) {
+          console.log(err);
+        });
+    } else {
+      res.json({});
+    }
   });
 
   app.post("/api/getUserAppointments", function (req, res) {
     console.log("/api/getUserAppointments");
 
-    let clientID = req.body.id;
-    let role = req.body.role;
-    let currentTime = Math.floor(Date.now() / 1000);
-    let obj = {};
+    if (req.user) {
+      let clientID = req.body.id;
+      let role = req.body.role;
+      let currentTime = Math.floor(Date.now() / 1000);
+      let obj = {};
 
-    if (role == "patient") {
-      db.sequelize
-        .query(
-          "SELECT * FROM Appointments WHERE client_id=" +
-            clientID +
-            " AND timestamp > " +
-            currentTime,
-          { type: db.Sequelize.QueryTypes.SELECT }
-        )
-        .then(function (appointments) {
-          obj = {
-            role: role,
-            appointments: appointments,
-          };
-          res.json(obj);
-        });
-    } else if (role == "doctor" || req.user.role == "admin") {
-      db.sequelize
-        .query(
-          "SELECT * FROM Appointments WHERE doctor_id=" +
-            clientID +
-            " AND timestamp > " +
-            currentTime,
-          { type: db.Sequelize.QueryTypes.SELECT }
-        )
-        .then(function (appointments) {
-          obj = {
-            role: role,
-            appointments: appointments,
-          };
-          res.json(obj);
-        })
-        .catch(function (err) {
-          console.log(err);
-        });
+      if (role == "patient") {
+        db.sequelize
+          .query(
+            "SELECT * FROM Appointments WHERE client_id=" +
+              clientID +
+              " AND timestamp > " +
+              currentTime,
+            { type: db.Sequelize.QueryTypes.SELECT }
+          )
+          .then(function (appointments) {
+            obj = {
+              role: role,
+              appointments: appointments,
+            };
+            res.json(obj);
+          });
+      } else if (role == "doctor" || req.user.role == "admin") {
+        db.sequelize
+          .query(
+            "SELECT * FROM Appointments WHERE doctor_id=" +
+              clientID +
+              " AND timestamp > " +
+              currentTime,
+            { type: db.Sequelize.QueryTypes.SELECT }
+          )
+          .then(function (appointments) {
+            obj = {
+              role: role,
+              appointments: appointments,
+            };
+            res.json(obj);
+          })
+          .catch(function (err) {
+            console.log(err);
+          });
+      }
+    } else {
+      res.json({});
     }
   });
 
   app.post("/api/getSchedule", function (req, res) {
     console.log("/api/getSchedule");
 
-    let doctorID = req.body.id;
-    let year = req.body.year;
-    let month = req.body.month;
-    let day = req.body.day;
-    let dayOfWeek = req.body.dayOfWeek
+    if (req.user) {
+      let doctorID = req.body.id;
+      let year = req.body.year;
+      let month = req.body.month;
+      let day = req.body.day;
+      let dayOfWeek = req.body.dayOfWeek;
 
-    db.sequelize
-      .query(
-        "SELECT * FROM Appointments WHERE doctor_id=" +
-          doctorID +
-          " AND year=" +
-          year +
-          " AND month=" +
-          month +
-          " AND day=" +
-          day,
-        {
-          type: db.Sequelize.QueryTypes.SELECT,
-        }
-      )
-      .then(function (appointments) {
-
-        db.sequelize
-        .query(`SELECT * FROM Users WHERE id=${doctorID}`, {
-          type: db.Sequelize.QueryTypes.SELECT,
-        })
-        .then(function (doctor) {
-          let schedule = []
-          if (doctor[0].doctorSchedule) {
-            schedule = JSON.parse(doctor[0].doctorSchedule)
+      db.sequelize
+        .query(
+          "SELECT * FROM Appointments WHERE doctor_id=" +
+            doctorID +
+            " AND year=" +
+            year +
+            " AND month=" +
+            month +
+            " AND day=" +
+            day,
+          {
+            type: db.Sequelize.QueryTypes.SELECT,
           }
-          createTimeSlots(schedule, appointments)
-        })
-  
-        function createTimeSlots(schedule, appointments) {
-          let timeSlots = [];
+        )
+        .then(function (appointments) {
+          db.sequelize
+            .query(`SELECT * FROM Users WHERE id=${doctorID}`, {
+              type: db.Sequelize.QueryTypes.SELECT,
+            })
+            .then(function (doctor) {
+              let schedule = [];
+              if (doctor[0].doctorSchedule) {
+                schedule = JSON.parse(doctor[0].doctorSchedule);
+              }
+              createTimeSlots(schedule, appointments);
+            });
 
-          for (time of workingHours) {
-            let show = true;
-  
-            for (appointment of appointments) {
-              if (time.hour == appointment.hour) {
-                show = false;
+          function createTimeSlots(schedule, appointments) {
+            let timeSlots = [];
+
+            for (time of workingHours) {
+              let show = true;
+
+              for (appointment of appointments) {
+                if (time.hour == appointment.hour) {
+                  show = false;
+                }
+              }
+              if (show && isHourAvail(schedule, dayOfWeek, time.hour)) {
+                timeSlots.push(time);
               }
             }
-            if (show && isHourAvail(schedule, dayOfWeek, time.hour)) {
-              timeSlots.push(time);
-            }
+            res.json(timeSlots);
           }
-          res.json(timeSlots);
-        }
-      });
+        });
+    } else {
+      res.json({});
+    }
   });
 
   app.post("/api/createAppointment", function (req, res) {
     console.log("/api/createAppointment");
 
-    let year = req.body.year;
-    let month = req.body.month;
-    let day = req.body.day;
-    let hour = req.body.hour;
-    let doctorName = req.body.doctorName;
-    let clientName = req.body.clientName;
-    let healthcardNum = req.body.healthcardNum;
-    let height = req.body.height;
-    let weight = req.body.weight;
-    let currentMed = req.body.currentMed;
-    let checkup = req.body.checkup;
+    if (req.user) {
+      let year = req.body.year;
+      let month = req.body.month;
+      let day = req.body.day;
+      let hour = req.body.hour;
+      let doctorName = req.body.doctorName;
+      let clientName = req.body.clientName;
+      let healthcardNum = req.body.healthcardNum;
+      let height = req.body.height;
+      let weight = req.body.weight;
+      let currentMed = req.body.currentMed;
+      let checkup = req.body.checkup;
 
-    let str = month + "/" + day + "/" + year + " " + hour + ":00:00";
+      let str = month + "/" + day + "/" + year + " " + hour + ":00:00";
 
-    let currentTime = Math.floor(Date.now() / 1000);
-    db.sequelize
-      .query(
-        "SELECT * FROM Appointments WHERE client_id=" +
-          req.body.clientID +
-          " AND timestamp > " +
-          currentTime,
-        { type: db.Sequelize.QueryTypes.SELECT }
-      )
-      .then(function (appointments) {
-        if (appointments.length == 0) {
-          db.Appointment.create({
-            client_id: req.body.clientID,
-            doctor_id: req.body.doctorID,
-            doctorName: doctorName,
-            clientName: clientName,
-            year: year,
-            month: month,
-            day: day,
-            hour: hour,
-            timestamp: toTimestamp(str),
-            healthcardNum: healthcardNum,
-            height: height,
-            weight: weight,
-            currentMed: currentMed,
-            checkup: checkup,
-          })
-            .then(function () {
-              res.json("Your appointment was created");
+      let currentTime = Math.floor(Date.now() / 1000);
+      db.sequelize
+        .query(
+          "SELECT * FROM Appointments WHERE client_id=" +
+            req.body.clientID +
+            " AND timestamp > " +
+            currentTime,
+          { type: db.Sequelize.QueryTypes.SELECT }
+        )
+        .then(function (appointments) {
+          if (appointments.length == 0) {
+            db.Appointment.create({
+              client_id: req.body.clientID,
+              doctor_id: req.body.doctorID,
+              doctorName: doctorName,
+              clientName: clientName,
+              year: year,
+              month: month,
+              day: day,
+              hour: hour,
+              timestamp: toTimestamp(str),
+              healthcardNum: healthcardNum,
+              height: height,
+              weight: weight,
+              currentMed: currentMed,
+              checkup: checkup,
             })
-            .catch(function (err) {
-              console.log(err);
-              res.status(401).json(err);
-            });
-        } else {
-          res.json("You are already booked for an appointment");
-        }
-      });
+              .then(function () {
+                res.json("Your appointment was created");
+              })
+              .catch(function (err) {
+                console.log(err);
+                res.status(401).json(err);
+              });
+          } else {
+            res.json("You are already booked for an appointment");
+          }
+        });
+    } else {
+      res.json({});
+    }
   });
 
-  // Route for logging user out
   app.get("/logout", function (req, res) {
     console.log("/api/logout");
 
@@ -275,16 +306,16 @@ module.exports = function (app) {
       let doctorID = req.body.doctorID;
 
       db.sequelize
-      .query(`SELECT * FROM Users WHERE id=${doctorID}`, {
-        type: db.Sequelize.QueryTypes.SELECT,
-      })
-      .then(function (doctor) {
-        let schedule = []
-        if (doctor[0].doctorSchedule) {
-          schedule = JSON.parse(doctor[0].doctorSchedule)
-        }
-        createDays(schedule)
-      })
+        .query(`SELECT * FROM Users WHERE id=${doctorID}`, {
+          type: db.Sequelize.QueryTypes.SELECT,
+        })
+        .then(function (doctor) {
+          let schedule = [];
+          if (doctor[0].doctorSchedule) {
+            schedule = JSON.parse(doctor[0].doctorSchedule);
+          }
+          createDays(schedule);
+        });
 
       function createDays(schedule) {
         let calender = [];
@@ -293,11 +324,11 @@ module.exports = function (app) {
           let month = moment().add(i, "d").format("MMMM");
           let day = moment().add(i, "d").format("DD");
           let week = moment().add(i, "d").format("ddd");
-  
+
           let yearNum = moment().add(i, "d").format("YYYY");
           let monthNum = moment().add(i, "d").format("M");
           let dayNum = moment().add(i, "d").format("D");
-  
+
           for (dayOfWeek of workingDays) {
             if (week == dayOfWeek) {
               let calenderObject = {
@@ -320,6 +351,7 @@ module.exports = function (app) {
 
   app.get("/api/getWorkingData", function (req, res) {
     console.log("/api/getWorkingData");
+
     if (!req.user) {
       res.json({});
     } else {
@@ -333,26 +365,29 @@ module.exports = function (app) {
   app.post("/api/submitDoctorSchedule", function (req, res) {
     console.log("/api/submitDoctorSchedule");
 
-    let schedule = req.body.schedule;
-    let doctorID = req.body.doctorID
+    if (req.user.role == "doctor" || req.user.role == "admin") {
+      let schedule = req.body.schedule;
+      let doctorID = req.body.doctorID;
 
-    db.User.update(
-      { doctorSchedule: schedule },
-      {
-        where: {
-          id: doctorID,
-        },
-      }
-    )
-      .then(function () {
-        res.json("New schedule submitted");
-      })
-      .catch(function (err) {
-        console.log(err);
-        res.status(401).json(err);
-      });
+      db.User.update(
+        { doctorSchedule: schedule },
+        {
+          where: {
+            id: doctorID,
+          },
+        }
+      )
+        .then(function () {
+          res.json("New schedule submitted");
+        })
+        .catch(function (err) {
+          console.log(err);
+          res.status(401).json(err);
+        });
+    } else {
+      res.json({});
+    }
   });
-
 
   app.post("/api/getDoctorSchedule", function (req, res) {
     console.log("/api/getSchedule");
@@ -360,21 +395,54 @@ module.exports = function (app) {
     if (req.user.role == "admin") {
       let doctorID = req.body.doctorID;
       db.sequelize
-      .query(`SELECT * FROM Users WHERE id=${doctorID}`, {
-        type: db.Sequelize.QueryTypes.SELECT,
-      })
-      .then(function (doctor) {
-        let schedule = []
-        if (doctor[0].doctorSchedule) {
-          schedule = JSON.parse(doctor[0].doctorSchedule)
-        }
-        res.json(schedule)
-      })
+        .query(`SELECT * FROM Users WHERE id=${doctorID}`, {
+          type: db.Sequelize.QueryTypes.SELECT,
+        })
+        .then(function (doctor) {
+          let schedule = [];
+          if (doctor[0].doctorSchedule) {
+            schedule = JSON.parse(doctor[0].doctorSchedule);
+          }
+          res.json(schedule);
+        });
     } else {
-      res.json({})
+      res.json({});
     }
   });
 
+  app.post("/api/deleteUser", function (req, res) {
+    console.log("/api/deleteUser");
+
+    if (req.user.role == "admin") {
+      let userID = req.body.userID;
+      db.User.destroy({
+        where: {
+          id: userID,
+        },
+      }).then(function () {
+        res.json("User deleted");
+      });
+    } else {
+      res.json({});
+    }
+  });
+
+  app.post("/api/deleteAppointment", function (req, res) {
+    console.log("/api/deleteAppointment");
+
+    if (req.user.role == "admin" || req.user.role == "doctor") {
+      let appointmentID = req.body.appointmentID;
+      db.Appointment.destroy({
+        where: {
+          id: appointmentID,
+        },
+      }).then(function () {
+        res.json("Appointment deleted");
+      });
+    } else {
+      res.json({});
+    }
+  });
 };
 
 function toTimestamp(strDate) {
@@ -387,26 +455,25 @@ function isDayAvail(doctorSchedule, day) {
     if (entry.day == day) {
       for (hour of entry.hours) {
         if (hour.avail == true) {
-          return true
+          return true;
         }
       }
     }
   }
-  return false
+  return false;
 }
 
 function isHourAvail(doctorSchedule, day, hour) {
-
-    for (entry of doctorSchedule) {
-      if (entry.day == day) {
-        for (h of entry.hours) {
-          if (h.hour == hour) {
-            if (h.avail) {
-              return true
-            }
+  for (entry of doctorSchedule) {
+    if (entry.day == day) {
+      for (h of entry.hours) {
+        if (h.hour == hour) {
+          if (h.avail) {
+            return true;
           }
         }
       }
     }
-    return false
+  }
+  return false;
 }
