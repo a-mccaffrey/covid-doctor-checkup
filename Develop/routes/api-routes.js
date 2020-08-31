@@ -239,7 +239,7 @@ module.exports = function (app) {
       });
   });
 
-  // Route for logging user out
+  
   app.get("/logout", function (req, res) {
     console.log("/api/logout");
 
@@ -375,6 +375,23 @@ module.exports = function (app) {
     }
   });
 
+  app.post("/api/deleteUser",function (req, res) {
+    console.log("/api/deleteUser");
+
+    if (req.user.role == "admin") {
+      let userID = req.body.userID
+      db.User.destroy({
+        where:{
+          id: userID
+        }
+      }).then(function(){
+        res.json("User deleted")
+      })
+    } else {
+      res.json({})
+    }
+
+  })
 };
 
 function toTimestamp(strDate) {

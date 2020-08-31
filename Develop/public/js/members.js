@@ -19,11 +19,13 @@ let doctorArray = [];
 let daysArray = [];
 let timeSlots = [];
 
+const userContainer = $("#userContainer");
+const userHeader = $(".userHeader");
+const doctorScheduleSelect = $("#doctorScheduleSelect");
+const apptContainer = $("#appointment-form");
+
+
 $(document).ready(function () {
-  const userContainer = $("#userContainer");
-  const userHeader = $(".userHeader");
-  const doctorScheduleSelect = $("#doctorScheduleSelect");
-  const apptContainer = $("#appointment-form");
 
   getUserData();
 
@@ -88,7 +90,7 @@ $(document).ready(function () {
                       <p>Weight: ${appointment.weight}</p>                
                       <p>Current Medications: ${appointment.currentMed}</p>
                       <p>Reason for Appointment: ${appointment.checkup}</p>
-              </div></div></div></div>`
+              </div><button class='btn btn-success' id='delete'>Delete</button></div></div>`
             );
           }
         }
@@ -127,7 +129,7 @@ $(document).ready(function () {
       );
 
       if (role == "admin") {
-        userContainer.append("<button class='btn btn-success' id='back'>Back</button>");
+        userContainer.append("<div class='row'><div class='col m-3'><button class='btn btn-success' id='back'>Back</button></div></div>");
       }
 
       applySchedule();
@@ -193,6 +195,7 @@ $(document).ready(function () {
 
   function getDoctors(role) {
     if (role == "patient" || role == "admin") {
+
       let buttonText = "Book now";
 
       if (role == "admin") {
@@ -202,6 +205,31 @@ $(document).ready(function () {
       $.get("/api/getdoctors").then(function (data) {
         doctorArray = data;
         for (doctor of data) {
+          if (role == "admin") {
+            userContainer.append(
+              "<div class='col my-2'><div class='card bg-success h-100'><div id='showdocs' class='card-body text-light'><h5 class='card-title font-weight-bold'>" +
+                doctor.name +
+                "</h5><p>Gender: " +
+                doctor.gender +
+                "</p><p>Province: " +
+                doctor.province +
+                "</p><p>Email: <a class='text-warning' href=mailto:" +
+                doctor.email +
+                ">" +
+                doctor.email +
+                "</a></p><p>Phone number: <a class='text-warning' href=tel:" +
+                doctor.phone +
+                "> " +
+                doctor.phone +
+                "</a></p><button class='booknow btn btn-outline-light'id=" +
+                doctor.name +
+                " value=" +
+                doctor.id +
+                "> View </button><button class='btn btn-outline-light'id='deleteUser'value=" +
+                doctor.id +
+                "> Delete </button></div></div></div>"
+            );
+          } else {
           userContainer.append(
             "<div class='col my-2'><div class='card bg-success h-100'><div id='showdocs' class='card-body text-light'><h5 class='card-title font-weight-bold'>" +
               doctor.name +
@@ -226,6 +254,7 @@ $(document).ready(function () {
               "</button></div></div></div>"
           );
         }
+      }
       });
     }
   }
@@ -342,10 +371,19 @@ $(document).ready(function () {
 
   function createAppointment(appointmentData) {
     $.post("/api/createAppointment", appointmentData).then(function (data) {
-      userContainer.html(data);
-      apptContainer.html("<img src='./assets/sick_teddy_bear.png' alt='A very sick teddy bear' class='img-fluid mb-3'/><h3 class='font-weight-bold text-success text-center'>" + data + "</h3>");
+      userContainer.html("<img src='./assets/sick_teddy_bear.png' alt='A very sick teddy bear' class='img-fluid mb-3'/><h3 class='font-weight-bold text-success text-center'>" + data + "</h3>");
 
-      userContainer.append("<button id='back' class='btn btn-success' >Back</button>");
+      doctorScheduleSelect.append("<button id='back' class='btn btn-success' >Back</button>");
+    });
+  }
+
+  function deleteUser(userID,){
+    $.post("/api/deleteUser", {
+      userID: userID,
+    }).then(function (data) {
+      console.log(data)
+      userContainer.html("")
+      getDoctors(role)
     });
   }
 
@@ -394,6 +432,10 @@ $(document).ready(function () {
         }
         return;
       }
+      if (event.target.id == "deleteUser"){
+        let userID = event.target.value
+        deleteUser(userID)
+      }
     }
   });
 });
@@ -416,3 +458,5 @@ function showMedication() {
     medicationList.style.display = "none";
   }
 }
+
+

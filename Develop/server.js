@@ -60,7 +60,36 @@ db.sequelize.sync().then(function () {
       "123456789",
       null
     );
-
+    create(
+      "liam.mackinnon@gmail.com",
+      "12345",
+      "patient",
+      "Liam Mackinnon",
+      "Male",
+      "ON",
+      "123456789",
+      null
+    );
+    create(
+      "Aisling.mccaffrey@gmail.com",
+      "12345",
+      "patient",
+      "Aisling McCaffrey",
+      "Female",
+      "ON",
+      "123456789",
+      null
+    );
+    create(
+      "pushpi.sardana@gmail.com",
+      "12345",
+      "patient",
+      "Pushpi Sardana",
+      "Female",
+      "ON",
+      "123456789",
+      null
+    );
     create(
       "iqbal.sian@hotmail.com",
       "12345",
