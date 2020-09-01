@@ -87,7 +87,7 @@ $(document).ready(function () {
     console.log(role)
 
     if (role == "doctor") {
-      clinicPasswordContainer.html("<label for='exampleInputPassword1'>ClinicPassword</label><input type='password' class='form-control' id='passwordClinic' placeholder='Password'/>")
+      clinicPasswordContainer.html("<label for='exampleInputPassword1'>Clinic Password*</label><input type='password' class='form-control' id='passwordClinic' placeholder='Password'/>")
       clinicPasswordInput = $("#passwordClinic")
     }
     else {
