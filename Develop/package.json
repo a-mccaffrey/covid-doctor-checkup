@@ -16,6 +16,7 @@
     "express-handlebars": "^5.1.0",
     "express-session": "^1.17.1",
     "moment": "^2.27.0",
+    "dotenv": "^8.2.0",
     "mysql2": "^1.7.0",
     "passport": "^0.4.1",
     "passport-local": "^1.0.0",

@@ -7907,3 +7907,43 @@ a.text-dark:focus {
     border-color: #dee2e6;
   }
 }
+.darkmode--activated .border-primary{
+  background-color: #120309 !important;
+  border-color: #fff !important;
+}
+.darkmode--activated .text-primary, .darkmode--activated .text-center{
+  color: #fff !important;
+}
+.darkmode--activated .text-success{
+  color: #424242 !important;
+}
+.darkmode--activated .bg-primary{
+  background-color: #000000 !important;
+  border-color: #000000 !important;
+}
+.darkmode--activated .navbar{
+  background-image: linear-gradient(to right,#000000,#424242);
+}
+.darkmode--activated .btn{
+  color: #fff !important;
+  background-color: #000000 !important;
+  border-color: #fff !important;
+}
+.darkmode--activated .btn:hover{
+  color: #000000 !important;
+  background-color: #fff !important;
+  border-color: #000000 !important;
+}
+.darkmode--activated .nav-link{
+  color:#fff;
+}
+.darkmode--activated .card .bg-success{
+  /* background-image: linear-gradient(to right,#000000,#424242); */
+  background-color: #000000 !important;
+  border-color: #ffffff !important;
+}
+.darkmode--activated .border-success{
+  background-color: #000000 !important;
+  border-color:#000000 !important;
+}
+

@@ -1,0 +1,87 @@
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+  <!-- My jQuery -->
+  <script src="js/tracker.js"></script>
+
+  <!-- Chart.js -->
+  <!-- <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.9.3/Chart.min.js"></script> -->
+
+  <title>COVID-19 Tracker Canada</title>
+</head>
+
+<body>
+  <!-- Start Navbar -->
+  <nav class="navbar fixed-top navbar-expand-lg navbar-dark bg-primary mb-2">
+    <img src="assets/appointify_logo_horizontal.svg" style="height: 50px" class="d-block d-lg-none" />
+    <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarsExample08"
+      aria-controls="navbarsExample08" aria-expanded="false" aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+    <div class="collapse navbar-collapse justify-content-md-center" id="navbarsExample08">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" href="#"><img src="assets/appointify_logo_horizontal.svg" style="height: 50px"
+              class="d-none d-lg-block" /></a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-light mt-3" href="/">Home</a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link text-light mt-3" href="/logout">Logout</a>
+        </li>
+      </ul>
+    </div>
+  </nav>
+  <!-- End Navbar -->
+  <!-- Main Title and  Sub-heading -->
+  <div class="container" style="margin-top: 150px">
+    <div class="row">
+      <div class="col-xl-6 colm-sm-12 mb-4 mx-auto">
+        <div class="card border-primary h-100 p-2 mt-2">
+          <div class="card-body flex-column align-items-center">
+            <h1 class="card-title text-primary bg-binding font-weight-bold text-center">COVID-19 Tracker Canada</h1>
+            <p class="text-primary">
+              A project by Liam, Dina, Aisling and Pushpi to keep track of all the
+              COVID-19 cases and help patients to book an appointment with doctors.
+            </p>
+          </div>
+
+          <!-- Total number of confirmed and all the other info -->
+          <div class="container my-5">
+            <div class="row text-center">
+              <div class="col-md-3 text-primary">
+                <h4 class="font-weight-bold">Confirmed</h4>
+                <p id="confirmed"></p>
+              </div>
+
+              <div class="col-md-3 text-primary">
+                <h4 class="font-weight-bold">Active</h4>
+                <p id="active"></p>
+              </div>
+
+              <div class="col-md-3 text-primary">
+                <h4 class="font-weight-bold">Recovered</h4>
+                <p id="recovered"></p>
+              </div>
+
+              <div class="col-md-3 text-danger">
+                <h4 class="font-weight-bold">Deceased</h4>
+                <p id="death"></p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quote -->
+          <div class="container p-3 my-5 text-center">
+            <h5 class="text-info">"Prevention is the Cure."</h5>
+            <p class="text-muted">Stay Indoors Stay Safe.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Used by Chart.js -->
+    <canvas id="myChart"></canvas>
+</body>
