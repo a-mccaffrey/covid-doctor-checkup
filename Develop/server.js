@@ -1,7 +1,7 @@
 // Requiring necessary npm packages
 var express = require("express");
 var session = require("express-session");
-// const exphbs = require("express-handlebars");
+const exphbs = require("express-handlebars");
 // Requiring passport as we've configured it
 var passport = require("./config/passport");
 
@@ -12,11 +12,15 @@ var db = require("./models");
 // Creating express app and configuring middleware needed for authentication
 var app = express();
 // Handlebars
-// app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
-// app.set('view engine', 'handlebars');
+app.engine('handlebars', exphbs({ defaultLayout: 'main' }));
+app.set('view engine', 'handlebars');
 
 // // Index route
-// app.get('/', (req, res) => res.render('index', { layout: 'landing' }));
+app.get('/', (req, res) => res.render('landing', { layout: 'main' }));
+app.get('/login', (req, res) => res.render('login', { layout: 'main' }));
+app.get('/members', (req, res) => res.render('members', { layout: 'main' }));
+app.get('/signup', (req, res) => res.render('signup', { layout: 'main' }));
+app.get('/tracker', (req, res) => res.render('tracker', { layout: 'main' }));
 
 app.use(express.urlencoded({ extended: true }));
 app.use(express.json());
