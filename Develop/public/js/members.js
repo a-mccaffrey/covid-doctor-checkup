@@ -403,9 +403,7 @@ $(document).ready(function () {
 
   function createAppointment(appointmentData) {
     $.post("/api/createAppointment", appointmentData).then(function (data) {
-      userContainer.html("<img src='./assets/sick_teddy_bear.png' alt='A very sick teddy bear' class='img-fluid mb-3'/><h3 class='font-weight-bold text-success text-center'>" + data + "</h3>");
-
-      userContainer.append("<button id='back' class='btn btn-success' >Back</button>");
+      userContainer.html("<img src='./assets/sick_teddy_bear.png' alt='A very sick teddy bear' class='card-img-top/><div class='col'><div class='card border-0'><div class='card-body'><h3 class='card-title font-weight-bold text-success text-center'>" + data + "</h3><div class='text-center'><button class='btn btn-success' id='back'>Back</button></div></div></div></div>");
     });
   }
 

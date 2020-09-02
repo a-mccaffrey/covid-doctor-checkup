@@ -216,7 +216,7 @@ function create(
     doctorSchedule: doctorSchedule,
   })
     .then(function () {
-      //res.redirect(307, "/api/login");
+      res.redirect(307, "/api/login");
     })
     .catch(function (err) {
       //console.log(err)
