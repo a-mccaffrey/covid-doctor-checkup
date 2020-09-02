@@ -1,6 +1,6 @@
 $(document).ready(function(){
     //get Json data from Url
-    $.getJSON("https://api.covid19india.org/data.json",function(data){
+    $.getJSON("https://services9.arcgis.com/pJENMVYPQqZZe20v/arcgis/rest/services/province_daily_totals/FeatureServer/0/query?where=1%3D1&outFields=Province,TotalCases,TotalRecovered,TotalDeaths,TotalActive&outSR=4326&f=json",function(data){
         var states = [];
         var confirmed = [];
         var recovered = [];

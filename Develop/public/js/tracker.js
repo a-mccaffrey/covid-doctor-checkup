@@ -1,5 +1,5 @@
 $(document).ready(function(){
-    class Provience {
+    class Province {
 
         constructor(name) {
           this.name = name;
@@ -59,17 +59,18 @@ $(document).ready(function(){
         var total_recovered;
         var total_deaths;
 
-         let AB = new Provience("ALBERTA");
-         let ON = new Provience("ONTARIO");
-         let MB = new Provience("MANITOBA");
-         let QC = new Provience("QUEBEC");
-         let NS = new Provience("NOVA SCOTIA");
-         let YK = new Provience("YUKON");
-         let SK = new Provience("SASKATCHEWAN");
-         let PE = new Provience("PEI");
-         let NB = new Provience("NEW BRUNSWICK");
-         let BC = new Provience("BRITISH COLUMBIA");
-         let NF = new Provience("NEWFOUNDLAND AND LABRADOR");
+         let AB = new Province("ALBERTA");
+         let ON = new Province("ONTARIO");
+         let MB = new Province("MANITOBA");
+         let QC = new Province("QUEBEC");
+         let NS = new Province("NOVA SCOTIA");
+         let YK = new Province("YUKON");
+         let SK = new Province("SASKATCHEWAN");
+         let PE = new Province("PEI");
+         let NB = new Province("NEW BRUNSWICK");
+         let BC = new Province("BRITISH COLUMBIA");
+         let NF = new Province("NEWFOUNDLAND AND LABRADOR");
+         let CA = new Province("CANADA")
 
         //  console.log(AB.getName())
         //  console.log(data.features[789].attributes.Province)
@@ -122,14 +123,22 @@ $(document).ready(function(){
         case "NEWFOUNDLAND AND LABRADOR":  NF.updateTC(obj.attributes.TotalCases); NF.updatetotalRecovered(obj.attributes.TotalRecovered);
                         NF.updateDeath(obj.attributes.TotalDeaths) ; NF.updateActive(obj.attributes.TotalActive);
                         break;
+
+        case "CANADA":  CA.updateTC(obj.attributes.TotalCases); CA.updatetotalRecovered(obj.attributes.TotalRecovered);
+                        CA.updateDeath(obj.attributes.TotalDeaths) ; CA.updateActive(obj.attributes.TotalActive);
+                        break;
         }
         });
   
-
-  finaldeath= AB.getDeath() +ON.getDeath() +QC.getDeath() +MB.getDeath() +NS.getDeath() +YK.getDeath() +SK.getDeath() +PE.getDeath() +NB.getDeath() +BC.getDeath() +NF.getDeath()
-  finalconfirmed= AB.getTC() +ON.getTC() +QC.getTC() +MB.getTC() +NS.getTC() +YK.getTC() +SK.getTC() +PE.getTC() +NB.getTC() +BC.getTC() +NF.getTC()
-  finalrecovered= AB.gettotalRecovered() +ON.gettotalRecovered() +QC.gettotalRecovered() +MB.gettotalRecovered() +NS.gettotalRecovered() +YK.gettotalRecovered() +SK.gettotalRecovered() +PE.gettotalRecovered() +NB.gettotalRecovered() +BC.gettotalRecovered() +NF.gettotalRecovered()
-  finalactive= AB.getActive() +ON.getActive() +QC.getActive() +MB.getActive() +NS.getActive() +YK.getActive() +SK.getActive() +PE.getActive() +NB.getActive() +BC.getActive() +NF.getActive()
+  finaldeath= CA.getDeath()
+  finalconfirmed= CA.getTC()
+  finalrecovered= CA.gettotalRecovered()
+  finalactive= CA.getActive()
+  
+  // finaldeath= AB.getDeath() +ON.getDeath() +QC.getDeath() +MB.getDeath() +NS.getDeath() +YK.getDeath() +SK.getDeath() +PE.getDeath() +NB.getDeath() +BC.getDeath() +NF.getDeath()
+  // finalconfirmed= AB.getTC() +ON.getTC() +QC.getTC() +MB.getTC() +NS.getTC() +YK.getTC() +SK.getTC() +PE.getTC() +NB.getTC() +BC.getTC() +NF.getTC()
+  // finalrecovered= AB.gettotalRecovered() +ON.gettotalRecovered() +QC.gettotalRecovered() +MB.gettotalRecovered() +NS.gettotalRecovered() +YK.gettotalRecovered() +SK.gettotalRecovered() +PE.gettotalRecovered() +NB.gettotalRecovered() +BC.gettotalRecovered() +NF.gettotalRecovered()
+  // finalactive= AB.getActive() +ON.getActive() +QC.getActive() +MB.getActive() +NS.getActive() +YK.getActive() +SK.getActive() +PE.getActive() +NB.getActive() +BC.getActive() +NF.getActive()
   
         $("#confirmed").append(finalconfirmed,);
         $("#death").append(finaldeath);

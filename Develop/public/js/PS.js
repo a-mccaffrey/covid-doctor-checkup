@@ -1,4 +1,4 @@
-class Provience {
+class Province {
 
     constructor(name) {
       this.name = name;
@@ -47,5 +47,5 @@ class Provience {
   }
   
   // Usage:
-  let user = new Provience("John");
+  let user = new Province("John");
   user.sayHi();

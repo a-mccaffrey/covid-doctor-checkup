@@ -22,10 +22,10 @@ $(document).ready(function () {
     passwordInput.val("");
   });
 
-  loginUser("admin@gmail.com", "admin");
+  // loginUser("admin@gmail.com", "admin");
   //loginUser("diana.liubarets@gmail.com", "12345")
   //loginUser("pushpi.sardana@gmail.com", "12345")
-  //loginUser("Aisling.mccaffrey@gmail.com", "12345")
+  //loginUser("Aisling.s.mccaffrey@gmail.com", "12345")
   //loginUser("liam.mackinnon@gmail.com", "12345")
   //loginUser("iqbal.sian@hotmail.com", "12345")
   //loginUser("drhui@drhui.com", "12345")
