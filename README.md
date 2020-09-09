@@ -1,4 +1,4 @@
-![GitHub](https://img.shields.io/github/license/a-mccaffrey/covid-doctor-checkup)
+[![License](https://img.shields.io/badge/License-MIT-blue.svg)](https://opensource.org/licenses/MIT)
 
 # covid-doctor-checkup
 
@@ -35,7 +35,7 @@ $ npm install
 
 ### What it should look like
 
-![Screenshot](screenshot.png)
+![Screenshot](develop/public/assets/screenshot.png)
 
 ## Usage
 
